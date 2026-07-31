@@ -1,0 +1,15 @@
+export const ROUTES = {
+  LANDING: '/',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  DASHBOARD: '/dashboard',
+  APTITUDE: '/aptitude',
+  CORE_ECE: '/core-ece',
+  CODING: '/coding',
+  COMPANIES: '/companies',
+  RESUME_BUILDER: '/resume-builder',
+  AI_ASSISTANT: '/ai-assistant',
+  PROFILE: '/profile',
+  SETTINGS: '/settings',
+  ADMIN: '/admin',
+};

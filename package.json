@@ -1,0 +1,6 @@
+{
+  "name": "ece-career-compass",
+  "version": "1.0.0",
+  "description": "Root package for ECE Career Compass",
+  "private": true
+}

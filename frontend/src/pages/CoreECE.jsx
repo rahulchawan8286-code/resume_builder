@@ -1,0 +1,1 @@
+import React from 'react'; export default function CoreECE() { return <div>Core ECE</div>; }
