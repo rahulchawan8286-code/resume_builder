@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AuthCard } from '../../features/auth/components/AuthCard';
 import { Spinner } from '../../components/ui/Spinner';

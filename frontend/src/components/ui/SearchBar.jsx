@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Search } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Input } from './Input';

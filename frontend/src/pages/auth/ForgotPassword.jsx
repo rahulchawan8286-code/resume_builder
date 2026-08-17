@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthCard } from '../../features/auth/components/AuthCard';
 import { Input } from '../../components/ui/Input';
@@ -32,7 +32,7 @@ export default function ForgotPassword() {
         </form>
       ) : (
         <Alert className="bg-emerald-50 text-emerald-900 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800">
-          <AlertDescription>Check your email for a link to reset your password. If it doesn't appear within a few minutes, check your spam folder.</AlertDescription>
+          <AlertDescription>Check your email for a link to reset your password. If it doesn&apos;t appear within a few minutes, check your spam folder.</AlertDescription>
         </Alert>
       )}
       <div className="mt-6 text-center text-sm">

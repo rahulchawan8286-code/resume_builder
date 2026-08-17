@@ -1,5 +1,4 @@
-import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
+
 import { WeeklyProgressChart } from '../../features/dashboard/WeeklyProgressChart';
 import { ReadinessScoreCard } from '../../features/dashboard/ReadinessScoreCard';
 

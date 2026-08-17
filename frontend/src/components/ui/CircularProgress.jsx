@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 
 export const CircularProgress = memo(({ value = 0, size = 120, strokeWidth = 10, color = 'text-indigo-600' }) => {

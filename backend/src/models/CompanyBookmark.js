@@ -1,0 +1,10 @@
+const mongoose = require('mongoose');
+
+const companyBookmarkSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true },
+}, { timestamps: true });
+
+companyBookmarkSchema.index({ user: 1, company: 1 }, { unique: true });
+
+module.exports = mongoose.model('CompanyBookmark', companyBookmarkSchema);

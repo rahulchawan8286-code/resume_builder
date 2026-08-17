@@ -1,10 +1,9 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ROUTES } from '../../constants/routes';
 import { 
   LayoutDashboard, Brain, Cpu, Code2, Building2, 
-  FileText, Bot, TrendingUp, Bookmark, User, Settings, ShieldAlert, X
+  FileText, Bot, TrendingUp, Bookmark, User, Settings, ShieldAlert, X, LogOut
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 
@@ -26,7 +25,7 @@ const bottomItems = [
 ];
 
 export function Sidebar({ isOpen, onClose }) {
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const isAdmin = user?.role === 'admin';
 
   return (
@@ -91,6 +90,14 @@ export function Sidebar({ isOpen, onClose }) {
              <span className="font-medium text-sm">Admin</span>
            </NavLink>
           )}
+
+          <button
+            onClick={logout}
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+          >
+            <LogOut size={20} />
+            <span className="font-medium text-sm">Logout</span>
+          </button>
         </div>
       </motion.aside>
     </>

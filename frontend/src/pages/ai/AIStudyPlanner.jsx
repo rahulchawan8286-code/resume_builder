@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { Progress } from '../../components/ui/Progress';
 import { AIChatBubble } from '../../components/ui/AIChatBubble';

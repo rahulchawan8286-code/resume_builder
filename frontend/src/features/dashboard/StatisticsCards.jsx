@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Card } from '../../components/ui/Card';
 import { Trophy, Brain, Target, BookOpen } from 'lucide-react';
 

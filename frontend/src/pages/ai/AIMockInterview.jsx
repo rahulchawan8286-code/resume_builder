@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { AIChatBubble } from '../../components/ui/AIChatBubble';
@@ -22,7 +21,7 @@ export default function AIMockInterview() {
               <div className="w-24 h-24 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center animate-pulse">
                 <span className="text-4xl">🎙️</span>
               </div>
-              <p className="text-lg font-medium text-center">"Tell me about a time you had to optimize a complex circuit design."</p>
+              <p className="text-lg font-medium text-center">&quot;Tell me about a time you had to optimize a complex circuit design.&quot;</p>
               <div className="flex gap-4">
                 <Button className="bg-red-500 hover:bg-red-600 text-white">Stop Recording</Button>
                 <Button variant="outline">Type Answer Instead</Button>

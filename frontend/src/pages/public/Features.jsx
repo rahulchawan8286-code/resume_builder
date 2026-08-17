@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardDescription } from '../../components/ui/Card';
 import { Brain, Code2, FileText, Cpu } from 'lucide-react';

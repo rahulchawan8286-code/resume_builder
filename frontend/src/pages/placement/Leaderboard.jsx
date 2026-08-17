@@ -1,4 +1,3 @@
-import React from 'react';
 import { DataTable } from '../../components/ui/DataTable';
 import { mockLeaderboard } from '../../mocks';
 import { Avatar, AvatarImage, AvatarFallback } from '../../components/ui/Avatar';

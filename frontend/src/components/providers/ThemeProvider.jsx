@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useThemeStore } from '../../store/themeStore';
 import { THEME } from '../../constants/theme';
 

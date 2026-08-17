@@ -1,12 +1,8 @@
-import { cn } from "../../lib/utils"
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-function Skeleton({ className, ...props }) {
+export function Skeleton({ className, ...props }) {
   return (
-    <div
-      className={cn("animate-pulse rounded-md bg-gray-100 dark:bg-gray-800", className)}
-      {...props}
-    />
-  )
+    <div className={twMerge(clsx("animate-pulse rounded-md bg-gray-200 dark:bg-gray-800", className))} {...props} />
+  );
 }
-
-export { Skeleton }

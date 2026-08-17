@@ -1,5 +1,4 @@
-import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
+
 import { SubjectAnalysis } from '../../features/dashboard/SubjectAnalysis';
 import { CodingProgress } from '../../features/dashboard/CodingProgress';
 import { AIRecommendationCard } from '../../features/dashboard/AIRecommendationCard';

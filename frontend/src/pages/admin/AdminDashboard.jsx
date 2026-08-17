@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { mockAdminStats } from '../../mocks';
 import { Users, FileText, Bot, Activity } from 'lucide-react';

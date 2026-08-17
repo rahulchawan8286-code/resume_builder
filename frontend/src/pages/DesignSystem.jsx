@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { TextArea } from '../components/ui/TextArea';
@@ -10,7 +10,6 @@ import { Spinner } from '../components/ui/Spinner';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/Card';
 import { SearchBar } from '../components/ui/SearchBar';
 import { EmptyState } from '../components/ui/EmptyState';
-import { ErrorState } from '../components/ui/ErrorState';
 import { Alert, AlertTitle, AlertDescription } from '../components/ui/Alert';
 import { AIChatBubble } from '../components/ui/AIChatBubble';
 import { Timeline } from '../components/ui/Timeline';
@@ -128,7 +127,7 @@ export default function DesignSystem() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Edit Profile</DialogTitle>
-                  <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+                  <DialogDescription>Make changes to your profile here. Click save when you&apos;re done.</DialogDescription>
                 </DialogHeader>
                 <div className="py-4"><Input placeholder="Name" /></div>
                 <DialogFooter>

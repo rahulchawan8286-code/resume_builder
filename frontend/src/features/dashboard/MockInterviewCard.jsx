@@ -1,18 +1,27 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Card } from '../../components/ui/Card';
 import { Bot } from 'lucide-react';
+import { useDashboardStore } from '../../store/dashboardStore';
 
 export const MockInterviewCard = memo(() => {
+  const { readinessData } = useDashboardStore();
+  const score = readinessData?.components?.mockInterview?.score;
+
   return (
     <Card>
       <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
         <Bot size={20} className="text-indigo-500" /> Mock Interviews
       </h2>
-      <div className="space-y-3">
-         <div className="flex justify-between items-center text-sm"><span>Technical</span><span className="font-bold">8/10</span></div>
-         <div className="flex justify-between items-center text-sm"><span>HR</span><span className="font-bold text-red-500">4/10</span></div>
-         <div className="flex justify-between items-center text-sm"><span>Communication</span><span className="font-bold">7/10</span></div>
-      </div>
+      {score !== undefined ? (
+        <div className="flex flex-col items-center justify-center">
+           <span className="text-4xl font-bold text-indigo-500 mb-2">{score}%</span>
+           <span className="text-sm text-gray-500">Average Performance</span>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center mt-4 text-center h-20">
+          <span className="text-sm text-gray-500 italic">No mock interviews completed.</span>
+        </div>
+      )}
     </Card>
   );
 });

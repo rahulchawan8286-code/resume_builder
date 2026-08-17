@@ -1,6 +1,47 @@
+# Dependencies
 node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Frontend build output
 dist/
+dist-ssr/
 build/
+
+# Environment Variables (Keep these out of source control)
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.development
+.env.test
+.env.production
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 .DS_Store
+Thumbs.db
+
+# Misc development files
+coverage/
+.nyc_output/
+*.log
+
+# Scripts used for building the project initially
+createBatch*.js
+createLayouts*.js
+createDesignSystem*.js
+build_backend*.js
+fix_*.cjs
+e2e_*.cjs

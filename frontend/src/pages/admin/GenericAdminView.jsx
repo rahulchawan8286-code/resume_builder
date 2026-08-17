@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent } from '../../components/ui/Card';
 
 export default function GenericAdminView({ title, description }) {

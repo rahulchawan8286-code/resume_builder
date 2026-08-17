@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Input } from '../../components/ui/Input';
 import { TextArea } from '../../components/ui/TextArea';
