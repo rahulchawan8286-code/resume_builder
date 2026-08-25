@@ -9,3 +9,15 @@ exports.getAllSubjects = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getSubjectById = async (req, res, next) => {
+  try {
+    const subject = await Subject.findById(req.params.id);
+    if (!subject) {
+      return errorResponse(res, 404, 'Subject not found');
+    }
+    return successResponse(res, 200, 'Subject fetched successfully', subject);
+  } catch (error) {
+    next(error);
+  }
+};

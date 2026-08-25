@@ -1,20 +1,56 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Stepper } from '../../components/ui/Stepper';
-import { mockSubjectDetails } from '../../mocks';
-import { BookOpen, FileCode2 } from 'lucide-react';
+import { BookOpen, FileCode2, Loader2 } from 'lucide-react';
+import { subjectService } from '../../api/subjectService';
+import { ErrorState } from '../../components/ui/ErrorState';
 
 export default function SubjectDetails() {
   const { id } = useParams();
-  const subject = mockSubjectDetails; // Assume fetched based on id
+  const [subject, setSubject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSubject = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await subjectService.getSubjectById(id);
+        setSubject(data);
+      } catch (err) {
+        setError('Failed to load subject details.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSubject();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+      </div>
+    );
+  }
+
+  if (error || !subject) {
+    return <ErrorState message={error || 'Subject not found'} />;
+  }
+
+  // Fallback modules for now, since Subject model only has name/description
+  const modules = [{ title: "Fundamentals" }, { title: "Core Concepts" }, { title: "Advanced Topics" }, { title: "Applications" }];
+  const learningOutcomes = ["Understand the basic principles", "Analyze complex problems", "Design practical solutions"];
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">{subject.name}</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1 max-w-2xl">{subject.overview}</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 max-w-2xl">{subject.description || 'No description available.'}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild><Link to={`/core/notes/${id}`}><BookOpen className="mr-2" size={16}/> Read Notes</Link></Button>
@@ -27,7 +63,7 @@ export default function SubjectDetails() {
           <CardHeader><CardTitle>Course Modules</CardTitle></CardHeader>
           <CardContent>
             <Stepper 
-              steps={subject.modules.map(m => ({ title: m.title }))} 
+              steps={modules.map(m => ({ title: m.title }))} 
               currentStep={2} 
               className="mt-8 flex-col items-start gap-8 md:flex-row md:items-center md:gap-0" 
             />
@@ -37,7 +73,7 @@ export default function SubjectDetails() {
           <CardHeader><CardTitle>Learning Outcomes</CardTitle></CardHeader>
           <CardContent>
             <ul className="list-disc pl-5 space-y-2 text-sm text-gray-600 dark:text-gray-300">
-              {subject.learningOutcomes.map((outcome, i) => (
+              {learningOutcomes.map((outcome, i) => (
                 <li key={i}>{outcome}</li>
               ))}
             </ul>

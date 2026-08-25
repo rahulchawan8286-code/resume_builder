@@ -13,5 +13,11 @@ router.use('/quizzes', quizzesRoutes);
 router.use('/results', resultsRoutes);
 router.use('/coding', require('./coding.routes'));
 router.use('/ai', require('./ai.routes'));
+router.use('/readiness', require('./readiness.routes'));
+router.use('/company', require('./company.routes'));
+router.use('/roadmap', require('./roadmap.routes'));
+router.use('/resume', require('./resume.routes'));
+router.use('/interviews', require('./interview.routes'));
+router.use('/notes', require('./notes.routes'));
 
 module.exports = router;

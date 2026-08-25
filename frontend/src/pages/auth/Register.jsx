@@ -58,6 +58,8 @@ export default function Register() {
             placeholder="John Doe" 
             {...register('name')}
             aria-invalid={!!errors.name}
+            autoComplete="name"
+            spellCheck={false}
           />
           {errors.name && (
             <p className="text-xs text-red-500">{errors.name.message}</p>

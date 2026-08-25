@@ -11,20 +11,37 @@ const MainLayout = lazy(() => import('../layouts/DashboardLayout'));
 const AuthLayout = lazy(() => import('../layouts/AuthLayout'));
 
 // Lazy load pages
-const Landing = lazy(() => import('../pages/Landing'));
-const Login = lazy(() => import('../pages/Login'));
-const Register = lazy(() => import('../pages/Register'));
+const Landing = lazy(() => import('../pages/public/Landing'));
+const Login = lazy(() => import('../pages/auth/Login'));
+const Register = lazy(() => import('../pages/auth/Register'));
 const Dashboard = lazy(() => import('../pages/Dashboard'));
-const Aptitude = lazy(() => import('../pages/Aptitude'));
-const CoreECE = lazy(() => import('../pages/CoreECE'));
-const Coding = lazy(() => import('../pages/Coding'));
-const Companies = lazy(() => import('../pages/Companies'));
-const ResumeBuilder = lazy(() => import('../pages/ResumeBuilder'));
+const Aptitude = lazy(() => import('../pages/placement/AptitudeDashboard'));
+const Subjects = lazy(() => import('../pages/core/Subjects'));
+const CodingDashboard = lazy(() => import('../pages/coding/CodingDashboard'));
+const CompanyList = lazy(() => import('../pages/companies/CompanyList'));
+const CompanyDetails = lazy(() => import('../pages/companies/CompanyDetails'));
+const CompanyRoadmap = lazy(() => import('../pages/companies/CompanyRoadmap'));
+const ResumeDashboard = lazy(() => import('../pages/resume/ResumeDashboard'));
+const ResumeBuilder = lazy(() => import('../pages/resume/ResumeBuilder'));
+const ATSReport = lazy(() => import('../pages/resume/ATSReport'));
 const AIAssistant = lazy(() => import('../pages/AIAssistant'));
 const Profile = lazy(() => import('../pages/Profile'));
 const Settings = lazy(() => import('../pages/Settings'));
 const Admin = lazy(() => import('../pages/Admin'));
 const NotFound = lazy(() => import('../pages/NotFound'));
+
+// Placement / Quiz pages
+const QuizPage = lazy(() => import('../pages/placement/QuizPage'));
+const QuizResult = lazy(() => import('../pages/placement/QuizResult'));
+
+// Core ECE pages
+const SubjectDetails = lazy(() => import('../pages/core/SubjectDetails'));
+const NotesViewer = lazy(() => import('../pages/core/NotesViewer'));
+const PracticeTest = lazy(() => import('../pages/core/PracticeTest'));
+
+// Coding Practice pages
+const ProblemDetails = lazy(() => import('../pages/coding/ProblemDetails'));
+const SubmissionHistory = lazy(() => import('../pages/coding/SubmissionHistory'));
 
 // Interview pages
 const InterviewDashboard = lazy(() => import('../pages/analytics/InterviewDashboard'));
@@ -55,13 +72,27 @@ export const router = createBrowserRouter([
         children: [
           { path: ROUTES.DASHBOARD, element: <Suspense fallback={<Loader />}><Dashboard /></Suspense> },
           { path: ROUTES.APTITUDE, element: <Suspense fallback={<Loader />}><Aptitude /></Suspense> },
-          { path: ROUTES.CORE_ECE, element: <Suspense fallback={<Loader />}><CoreECE /></Suspense> },
-          { path: ROUTES.CODING, element: <Suspense fallback={<Loader />}><Coding /></Suspense> },
-          { path: ROUTES.COMPANIES, element: <Suspense fallback={<Loader />}><Companies /></Suspense> },
-          { path: ROUTES.RESUME_BUILDER, element: <Suspense fallback={<Loader />}><ResumeBuilder /></Suspense> },
+          { path: ROUTES.CORE_ECE, element: <Suspense fallback={<Loader />}><Subjects /></Suspense> },
+          { path: ROUTES.CODING, element: <Suspense fallback={<Loader />}><CodingDashboard /></Suspense> },
+          { path: ROUTES.COMPANIES, element: <Suspense fallback={<Loader />}><CompanyList /></Suspense> },
+          { path: '/companies/:id', element: <Suspense fallback={<Loader />}><CompanyDetails /></Suspense> },
+          { path: '/companies/roadmap/:id', element: <Suspense fallback={<Loader />}><CompanyRoadmap /></Suspense> },
+          { path: ROUTES.RESUME_BUILDER, element: <Suspense fallback={<Loader />}><ResumeDashboard /></Suspense> },
+          { path: '/resume/builder/:id', element: <Suspense fallback={<Loader />}><ResumeBuilder /></Suspense> },
+          { path: '/resume/ats/:id', element: <Suspense fallback={<Loader />}><ATSReport /></Suspense> },
           { path: ROUTES.AI_ASSISTANT, element: <Suspense fallback={<Loader />}><AIAssistant /></Suspense> },
           { path: ROUTES.PROFILE, element: <Suspense fallback={<Loader />}><Profile /></Suspense> },
           { path: ROUTES.SETTINGS, element: <Suspense fallback={<Loader />}><Settings /></Suspense> },
+          
+          { path: '/placement/quiz/:id', element: <Suspense fallback={<Loader />}><QuizPage /></Suspense> },
+          { path: '/placement/result/:id', element: <Suspense fallback={<Loader />}><QuizResult /></Suspense> },
+          
+          { path: '/core/subjects/:id', element: <Suspense fallback={<Loader />}><SubjectDetails /></Suspense> },
+          { path: '/core/notes/:id', element: <Suspense fallback={<Loader />}><NotesViewer /></Suspense> },
+          { path: '/core/practice/:id', element: <Suspense fallback={<Loader />}><PracticeTest /></Suspense> },
+          
+          { path: '/coding/problem/:id', element: <Suspense fallback={<Loader />}><ProblemDetails /></Suspense> },
+          { path: '/coding/history', element: <Suspense fallback={<Loader />}><SubmissionHistory /></Suspense> },
           
           { path: '/interviews', element: <Suspense fallback={<Loader />}><InterviewDashboard /></Suspense> },
           { path: '/interviews/session/:id', element: <Suspense fallback={<Loader />}><ActiveInterview /></Suspense> },

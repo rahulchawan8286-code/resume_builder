@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1',
   timeout: 30000,
   withCredentials: true,
 });
@@ -21,7 +21,10 @@ apiClient.interceptors.response.use((response) => response, async (error) => {
       await axios.post(`${apiClient.defaults.baseURL}/auth/refresh-token`, {}, { withCredentials: true });
       return apiClient(originalRequest);
     } catch (refreshError) {
-      window.location.href = '/login';
+      const publicPaths = ['/login', '/register', '/'];
+      if (!publicPaths.includes(window.location.pathname)) {
+        window.location.href = '/login';
+      }
       return Promise.reject(refreshError);
     }
   }
