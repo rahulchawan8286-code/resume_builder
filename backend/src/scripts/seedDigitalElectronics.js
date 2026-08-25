@@ -15,6 +15,15 @@ const seedDigitalElectronics = async () => {
     let user = await User.findOne({ role: 'Admin' });
     if (!user) {
       user = await User.findOne({});
+      if (!user) {
+        console.log('No user found to assign as author. Creating dummy admin...');
+        user = await User.create({
+          name: 'System Admin',
+          email: 'admin@careercompass.test',
+          password: 'password123',
+          role: 'Admin'
+        });
+      }
     }
 
     let subject = await Subject.findOne({ name: 'Digital Electronics' });
