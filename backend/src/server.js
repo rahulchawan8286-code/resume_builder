@@ -12,11 +12,15 @@ const Subject = require('./models/Subject');
 // Connect to Database
 connectDB().then(async () => {
   try {
-    // Auto-seed in production if notes are completely empty
-    const subject = await Subject.findOne({ name: 'Digital Electronics' });
+    // Auto-seed in production if notes are completely empty for the active ECE subject
+    let subject = await Subject.findOne({ code: 'ECE-DE' });
+    if (!subject) {
+      subject = await Subject.findOne({ name: 'Digital Electronics' });
+    }
+    
     if (subject) {
       const count = await Note.countDocuments({ subject: subject._id });
-      if (count === 0) {
+      if (count === 0 || !subject.code) {
         logger.info('Auto-seeding Digital Electronics notes into production database...');
         await seedDigitalElectronics();
       }

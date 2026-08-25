@@ -26,13 +26,21 @@ const seedDigitalElectronics = async () => {
       }
     }
 
-    let subject = await Subject.findOne({ name: 'Digital Electronics' });
+    let subject = await Subject.findOne({ code: 'ECE-DE' });
+    if (!subject) {
+      subject = await Subject.findOne({ name: 'Digital Electronics' });
+    }
+    
     if (!subject) {
       subject = await Subject.create({
         name: 'Digital Electronics',
         description: 'Study of digital signals, logic gates, Boolean algebra, and circuits.',
+        code: 'ECE-DE',
         isActive: true
       });
+    } else if (!subject.code || subject.code !== 'ECE-DE') {
+      subject.code = 'ECE-DE';
+      await subject.save();
     }
 
     // Clear existing notes to prevent duplicates or legacy titles
