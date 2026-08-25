@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────
+   DESIGN TOKENS — Light Mode (default)
+───────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* Core palette — indigo-violet SaaS */
+    --background:         0 0% 100%;
+    --foreground:         224 71% 4%;
+    --card:               0 0% 100%;
+    --card-foreground:    224 71% 4%;
+    --popover:            0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+
+    --primary:            262 83% 58%;      /* indigo-violet */
+    --primary-foreground: 210 40% 98%;
+    --secondary:          220 14% 96%;
+    --secondary-foreground: 220 9% 46%;
+    --muted:              220 14% 96%;
+    --muted-foreground:   220 9% 46%;
+    --accent:             262 83% 96%;
+    --accent-foreground:  262 83% 38%;
+    --destructive:        0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border:             220 13% 91%;
+    --input:              220 13% 91%;
+    --ring:               262 83% 58%;
+    --radius:             0.75rem;
+
+    /* Custom tokens */
+    --sidebar-bg:         224 71% 4%;
+    --sidebar-fg:         220 14% 96%;
+    --glass-bg:           rgba(255,255,255,0.7);
+    --glass-border:       rgba(255,255,255,0.4);
+    --gradient-primary:   linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-success:   linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --shadow-glow:        0 0 40px rgba(99, 102, 241, 0.15);
+  }
+
+  /* ─── Dark Mode ─── */
+  .dark {
+    --background:         224 71% 4%;
+    --foreground:         213 31% 91%;
+    --card:               224 71% 6%;
+    --card-foreground:    213 31% 91%;
+    --popover:            224 71% 6%;
+    --popover-foreground: 213 31% 91%;
+
+    --primary:            262 83% 65%;
+    --primary-foreground: 224 71% 4%;
+    --secondary:          223 47% 11%;
+    --secondary-foreground: 215 20% 65%;
+    --muted:              223 47% 11%;
+    --muted-foreground:   215 20% 65%;
+    --accent:             262 83% 15%;
+    --accent-foreground:  262 83% 75%;
+    --destructive:        0 63% 50%;
+    --destructive-foreground: 213 31% 91%;
+
+    --border:             216 34% 17%;
+    --input:              216 34% 17%;
+    --ring:               262 83% 65%;
+
+    --glass-bg:           rgba(15, 23, 42, 0.8);
+    --glass-border:       rgba(255,255,255,0.08);
+    --shadow-glow:        0 0 40px rgba(139, 92, 246, 0.2);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   BASE RESET
+───────────────────────────────────────────────────────── */
+@layer base {
+  * { @apply border-border; }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    @apply font-bold tracking-tight;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-muted; }
+  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-muted-foreground; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   UTILITY CLASSES
+───────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Glassmorphism */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-dark {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* Gradients */
+  .gradient-primary { background: var(--gradient-primary); }
+  .gradient-secondary { background: var(--gradient-secondary); }
+  .gradient-success { background: var(--gradient-success); }
+
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glow shadow */
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+
+  /* Dot grid pattern background */
+  .bg-dot-pattern {
+    background-image: radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+    @apply hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10;
+  }
+
+  /* Shimmer skeleton */
+  .shimmer {
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 50%, hsl(var(--muted)) 75%);
+    background-size: 400% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Page transition base */
+  .page-enter { @apply opacity-0 translate-y-2; }
+  .page-enter-active { @apply opacity-100 translate-y-0 transition-all duration-300; }
+}

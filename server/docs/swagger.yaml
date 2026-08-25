@@ -1,0 +1,28 @@
+openapi: 3.0.0
+info:
+  title: AI Resume Builder API
+  description: Professional API for the AI Resume Builder platform
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Local Development Server
+tags:
+  - name: Health
+    description: Healthcheck operations
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: API is healthy
+  /version:
+    get:
+      tags:
+        - Health
+      summary: Get API version
+      responses:
+        '200':
+          description: Returns current version

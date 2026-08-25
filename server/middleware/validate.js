@@ -1,0 +1,36 @@
+const { z } = require('zod');
+const formatResponse = require('../utils/responseFormatter');
+
+/**
+ * Validates the incoming request body, query, or params against a Zod schema.
+ * 
+ * @param {Object} schema - Zod schema (can have body, query, and params fields)
+ */
+const validate = (schema) => async (req, res, next) => {
+  try {
+    if (schema.body) {
+      req.body = await schema.body.parseAsync(req.body);
+    }
+    if (schema.query) {
+      req.query = await schema.query.parseAsync(req.query);
+    }
+    if (schema.params) {
+      req.params = await schema.params.parseAsync(req.params);
+    }
+    next();
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const formattedErrors = error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message
+      }));
+      
+      return res.status(400).json(
+        formatResponse(false, 'Validation Error', null, formattedErrors)
+      );
+    }
+    next(error);
+  }
+};
+
+module.exports = validate;
