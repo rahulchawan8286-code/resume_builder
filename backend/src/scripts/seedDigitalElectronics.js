@@ -6,8 +6,10 @@ const User = require('../models/User');
 
 const seedDigitalElectronics = async () => {
   try {
-    console.log('Connecting to MongoDB...');
-    await mongoose.connect(process.env.MONGODB_URI);
+    if (mongoose.connection.readyState === 0) {
+      console.log('Connecting to MongoDB...');
+      await mongoose.connect(process.env.MONGODB_URI);
+    }
     console.log('Connected.');
 
     let user = await User.findOne({ role: 'Admin' });
@@ -399,11 +401,16 @@ endmodule
     }
 
     console.log('✅ Successfully seeded Digital Electronics study notes.');
-    process.exit(0);
+    if (require.main === module) process.exit(0);
   } catch (error) {
     console.error('Error seeding notes:', error);
-    process.exit(1);
+    if (require.main === module) process.exit(1);
+    throw error;
   }
 };
 
-seedDigitalElectronics();
+if (require.main === module) {
+  seedDigitalElectronics();
+} else {
+  module.exports = seedDigitalElectronics;
+}
