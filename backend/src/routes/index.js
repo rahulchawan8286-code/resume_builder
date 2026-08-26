@@ -5,12 +5,14 @@ const authRoutes = require('./auth.routes');
 const subjectsRoutes = require('./subjects.routes');
 const quizzesRoutes = require('./quizzes.routes');
 const resultsRoutes = require('./results.routes');
+const progressRoutes = require('./progress.routes');
 // Auto-load other routes here later...
 
 router.use('/auth', authRoutes);
 router.use('/subjects', subjectsRoutes);
 router.use('/quizzes', quizzesRoutes);
 router.use('/results', resultsRoutes);
+router.use('/progress', progressRoutes);
 router.use('/coding', require('./coding.routes'));
 router.use('/ai', require('./ai.routes'));
 router.use('/readiness', require('./readiness.routes'));

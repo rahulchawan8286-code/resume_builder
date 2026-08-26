@@ -10,7 +10,7 @@ const seedDigitalElectronics = async () => {
       console.log('Connecting to MongoDB...');
       await mongoose.connect(process.env.MONGODB_URI);
     }
-    console.log('Connected.');
+    console.log('Connected to MongoDB.');
 
     let user = await User.findOne({ role: 'Admin' });
     if (!user) {
@@ -43,12 +43,19 @@ const seedDigitalElectronics = async () => {
       await subject.save();
     }
 
-    // Clear existing notes to prevent duplicates or legacy titles
-    await Note.deleteMany({ subject: subject._id });
+    // Do NOT clear existing notes to maintain idempotency. We will use upsert.
 
     const chaptersData = [
       {
-        title: '1. Number Systems and Codes',
+        chapterNumber: 1,
+        title: 'Number Systems and Codes',
+        shortDescription: 'Understanding binary, octal, hexadecimal, and various codes.',
+        difficulty: 'Easy',
+        examImportance: 'High',
+        topics: ['Decimal & Binary', 'Base Conversions', 'Binary Codes', 'Complements'],
+        importantConcepts: ['Binary Coded Decimal (BCD)', 'Gray Code', '1s and 2s Complement'],
+        formulas: ['Binary to Decimal: Sum of (Bit * 2^position)'],
+        examples: ['Convert 1011_2 to Decimal: 1*(8) + 0*(4) + 1*(2) + 1*(1) = 11_10'],
         content: `
 # Number Systems and Codes
 
@@ -60,26 +67,48 @@ Digital systems operate on binary data. Understanding number systems is the firs
 - **Binary (Base 2):** 0-1. Used internally by digital circuits.
 - **Octal (Base 8):** 0-7. Used for compact binary representation (groups of 3 bits).
 - **Hexadecimal (Base 16):** 0-9, A-F. Widely used in microprocessors and memory addressing (groups of 4 bits).
-
-## Number Base Conversions
-Conversion from decimal to any base involves repeated division. Conversion to decimal involves positional weights.
-Example: 
-Binary \`1011_2\` = \`1*(2^3) + 0*(2^2) + 1*(2^1) + 1*(2^0)\` = \`11_10\`
-
-## Binary Codes
-- **BCD (Binary Coded Decimal):** Each decimal digit is represented by 4 bits.
-- **Gray Code:** Only one bit changes state from one position to the next. Excellent for reducing errors in electro-mechanical switches.
-- **ASCII Code:** 7-bit code used for text representation.
-
-## Complements
-- **1's Complement:** Invert all bits.
-- **2's Complement:** Add 1 to the 1's complement. This is the standard mechanism for representing negative numbers in digital systems because it allows subtraction to be performed by an adder circuit.
-
-**Exam Tip:** Always check if a number is signed or unsigned before evaluating its decimal equivalent!
-        `
+        `,
+        questions2Mark: [
+          'What is the base of the hexadecimal number system?',
+          'Define Gray Code.'
+        ],
+        questions5Mark: [
+          'Explain the process of converting a decimal number to its binary equivalent with an example.',
+          'Differentiate between 1s complement and 2s complement representation.'
+        ],
+        questions10Mark: [
+          'Discuss various binary codes including BCD, Gray, and Excess-3 with examples of each.'
+        ],
+        quickRevision: [
+          'Decimal base is 10, Binary is 2, Octal is 8, Hexadecimal is 16.',
+          'Gray Code is unweighted and only 1 bit changes between consecutive numbers.',
+          '2s complement = 1s complement + 1.'
+        ],
+        mcqs: [
+          {
+            question: 'Which of the following is an unweighted code?',
+            options: ['BCD', 'Excess-3', 'Binary', 'Octal'],
+            correctAnswer: 'Excess-3',
+            explanation: 'Excess-3 and Gray code are unweighted codes. BCD, Binary, and Octal have positional weights.'
+          },
+          {
+            question: 'What is the 2s complement of 1010?',
+            options: ['0101', '0110', '1011', '0111'],
+            correctAnswer: '0110',
+            explanation: '1s complement of 1010 is 0101. Add 1 to get 0110.'
+          }
+        ]
       },
       {
-        title: '2. Boolean Algebra and Logic Gates',
+        chapterNumber: 2,
+        title: 'Boolean Algebra and Logic Gates',
+        shortDescription: 'Mathematical foundation of digital logic design and basic gates.',
+        difficulty: 'Medium',
+        examImportance: 'High',
+        topics: ['Boolean Laws', 'De Morgan\'s Theorems', 'Logic Gates'],
+        importantConcepts: ['Universal Gates', 'De Morgan\'s Laws'],
+        formulas: ['(A + B)\' = A\' * B\'', '(A * B)\' = A\' + B\''],
+        examples: ['Implement AND using NAND: (A NAND B) NAND (A NAND B)'],
         content: `
 # Boolean Algebra and Logic Gates
 
@@ -87,334 +116,510 @@ Binary \`1011_2\` = \`1*(2^3) + 0*(2^2) + 1*(2^1) + 1*(2^0)\` = \`11_10\`
 Boolean algebra forms the mathematical foundation of digital logic design.
 
 ### Key Laws and Theorems
-- **Commutative Law:** \`A + B = B + A\`
-- **Associative Law:** \`A(BC) = (AB)C\`
-- **Distributive Law:** \`A(B + C) = AB + AC\`
-- **Idempotent Law:** \`A + A = A\`
-- **Involution Law:** \`(A')' = A\`
-
-### De Morgan's Theorems
-Extremely important for converting AND logic to OR logic and vice versa.
-1. \`(A + B)' = A' * B'\` (NOR = Bubbled AND)
-2. \`(A * B)' = A' + B'\` (NAND = Bubbled OR)
-
-## Logic Gates
-- **Basic Gates:** AND, OR, NOT.
-- **Universal Gates:** NAND, NOR. They are "universal" because any Boolean function can be implemented using only NAND gates or only NOR gates.
-- **Special Gates:** XOR (Exclusive-OR), XNOR. 
-  - XOR output is 1 if inputs are different.
-  - XNOR output is 1 if inputs are the same.
-
-## Applications
-Logic gates are used in all digital ICs, microprocessors, and memory chips.
-
-**Exam Tip:** Be prepared to draw the transistor-level (CMOS) implementation of a NAND or NOR gate.
-        `
+- **Commutative Law:** A + B = B + A
+- **Associative Law:** A(BC) = (AB)C
+- **Distributive Law:** A(B + C) = AB + AC
+- **Idempotent Law:** A + A = A
+- **Involution Law:** (A')' = A
+        `,
+        questions2Mark: [
+          'State De Morgan\'s Theorems.',
+          'Why are NAND and NOR called universal gates?'
+        ],
+        questions5Mark: [
+          'Prove De Morgan\'s theorems using truth tables.',
+          'Realize basic gates (AND, OR, NOT) using only NAND gates.'
+        ],
+        questions10Mark: [
+          'Explain all Boolean Algebra laws and demonstrate how they are used to simplify logic expressions.'
+        ],
+        quickRevision: [
+          'NAND and NOR are Universal Gates.',
+          'XOR output is 1 when inputs are different.',
+          'XNOR output is 1 when inputs are the same.'
+        ],
+        mcqs: [
+          {
+            question: 'Which gate produces HIGH output only when all inputs are HIGH?',
+            options: ['OR', 'AND', 'XOR', 'NOT'],
+            correctAnswer: 'AND',
+            explanation: 'The AND gate produces HIGH only when every input is HIGH.'
+          }
+        ]
       },
       {
-        title: '3. Boolean Function Simplification',
+        chapterNumber: 3,
+        title: 'Boolean Function Simplification',
+        shortDescription: 'Simplifying Boolean expressions using K-Maps and Quine-McCluskey.',
+        difficulty: 'Medium',
+        examImportance: 'High',
+        topics: ['SOP and POS', 'Karnaugh Maps', 'Don\'t Care Conditions'],
+        importantConcepts: ['Minterms vs Maxterms', 'K-Map Grouping', 'Prime Implicants'],
+        formulas: ['F = Σm (SOP)', 'F = ΠM (POS)'],
+        examples: ['Group 4 adjacent 1s in a K-map to eliminate 2 variables.'],
         content: `
 # Boolean Function Simplification
 
 Simplifying Boolean functions reduces the number of logic gates needed, leading to faster, cheaper, and more power-efficient circuits.
 
 ## Canonical and Standard Forms
-- **Sum of Products (SOP):** \`F = AB + A'C\`. Corresponds to the "1s" in a truth table. Uses Minterms (Σm).
-- **Product of Sums (POS):** \`F = (A+B)(A'+C)\`. Corresponds to the "0s" in a truth table. Uses Maxterms (ΠM).
-
-## Karnaugh Maps (K-Maps)
-A visual method for simplifying Boolean expressions up to 4 or 5 variables.
-
-### K-Map Rules:
-1. Squares are arranged in Gray Code order (only one bit changes between adjacent squares).
-2. Group adjacent 1s in powers of 2 (1, 2, 4, 8, 16).
-3. Overlapping and edge-wrapping are allowed.
-4. The goal is to make the fewest number of groups with the largest possible size.
-
-## Don't Care Conditions (X)
-In some digital systems, certain input combinations will never occur. The output for these states is considered a "Don't Care" (X).
-We can choose to include an 'X' in a K-map group if it helps make a larger group (simplifying the expression further), or ignore it if it doesn't help.
-
-## Quine-McCluskey Method
-For more than 5 variables, K-Maps become unwieldy. The tabular Quine-McCluskey method is used instead and is easily programmable into software algorithms.
-        `
+- **Sum of Products (SOP):** F = AB + A'C. Corresponds to the "1s" in a truth table.
+- **Product of Sums (POS):** F = (A+B)(A'+C). Corresponds to the "0s" in a truth table.
+        `,
+        questions2Mark: [
+          'Define Minterm and Maxterm.',
+          'What is a don\'t care condition?'
+        ],
+        questions5Mark: [
+          'Simplify a 4-variable boolean function using a K-Map.',
+          'Explain the difference between Canonical and Standard forms.'
+        ],
+        questions10Mark: [
+          'Using the Quine-McCluskey tabular method, simplify a given boolean function with don\'t care conditions.'
+        ],
+        quickRevision: [
+          'SOP uses Minterms (1s), POS uses Maxterms (0s).',
+          'K-map adjacent squares differ by only 1 bit (Gray code order).',
+          'Don\'t cares (X) can be grouped to make larger groups.'
+        ],
+        mcqs: [
+          {
+            question: 'In a K-map, grouping 8 adjacent 1s eliminates how many variables?',
+            options: ['1', '2', '3', '4'],
+            correctAnswer: '3',
+            explanation: 'Grouping 2^n ones eliminates n variables. Since 8 = 2^3, it eliminates 3 variables.'
+          }
+        ]
       },
       {
-        title: '4. Combinational Logic Circuits',
+        chapterNumber: 4,
+        title: 'Combinational Logic Circuits',
+        shortDescription: 'Circuits where output depends only on current inputs.',
+        difficulty: 'Medium',
+        examImportance: 'High',
+        topics: ['Adders', 'Subtractors', 'Multiplexers', 'Decoders', 'Encoders'],
+        importantConcepts: ['Half Adder vs Full Adder', 'MUX as a Universal Logic component'],
+        formulas: ['Full Adder Sum = A ⊕ B ⊕ Cin', 'Full Adder Cout = AB + Cin(A ⊕ B)'],
+        examples: ['Implement a 4-to-1 MUX using logic gates.'],
         content: `
 # Combinational Logic Circuits
 
 In combinational logic, the output at any instant depends ONLY on the current input values. There is no memory or feedback loop.
 
 ## Arithmetic Circuits
-- **Half Adder:** Adds two 1-bit inputs. Outputs Sum (XOR) and Carry (AND).
-- **Full Adder:** Adds two 1-bit inputs plus a Carry-In. Outputs Sum and Carry-Out.
-  - \`Sum = A ⊕ B ⊕ Cin\`
-  - \`Cout = AB + Cin(A ⊕ B)\`
-- **Parallel Adder / Ripple Carry Adder:** Cascades multiple full adders to add N-bit numbers. The carry "ripples" through, which creates a propagation delay.
-- **Look-Ahead Carry Adder:** Solves the ripple delay by calculating the carry bits in parallel using complex combinational logic.
-
-## Multiplexers (MUX)
-A MUX selects one of \`2^n\` input lines and routes it to a single output line based on \`n\` select lines.
-- Often called a "Data Selector".
-- A MUX can be used to implement ANY Boolean function by tying the data inputs to Vcc or Gnd.
-
-## Demultiplexers and Decoders
-- **Demultiplexer (DEMUX):** Routes a single input to one of \`2^n\` output lines.
-- **Decoder:** Converts an N-bit binary input into \`2^n\` unique output lines. Frequently used for memory address decoding.
-
-## Encoders
-Converts an active input signal into a coded output (e.g., 8-to-3 encoder). Priority encoders handle cases where multiple inputs are active simultaneously by giving priority to the highest-order input.
-        `
+- **Half Adder:** Adds two 1-bit inputs.
+- **Full Adder:** Adds two 1-bit inputs plus a Carry-In.
+        `,
+        questions2Mark: [
+          'What is a Multiplexer?',
+          'Write the logical expressions for Full Adder Sum and Carry.'
+        ],
+        questions5Mark: [
+          'Design a Full Adder using two Half Adders and an OR gate.',
+          'Explain the operation of a 3-to-8 line Decoder.'
+        ],
+        questions10Mark: [
+          'Design a 4-bit Look-Ahead Carry Adder and explain how it resolves the ripple delay issue.'
+        ],
+        quickRevision: [
+          'MUX: 2^n inputs to 1 output.',
+          'Decoder: n inputs to 2^n outputs.',
+          'Combinational circuits have no memory.'
+        ],
+        mcqs: [
+          {
+            question: 'A multiplexer is also known as a:',
+            options: ['Data Selector', 'Data Distributor', 'Encoder', 'Decoder'],
+            correctAnswer: 'Data Selector',
+            explanation: 'A MUX selects one of many input signals and routes it to a single output.'
+          }
+        ]
       },
       {
-        title: '5. Sequential Logic Circuits',
+        chapterNumber: 5,
+        title: 'Sequential Logic Circuits',
+        shortDescription: 'Circuits with memory elements where output depends on past and current states.',
+        difficulty: 'Hard',
+        examImportance: 'High',
+        topics: ['Clocks', 'Latches vs Flip-Flops', 'Setup & Hold Time'],
+        importantConcepts: ['Edge-triggering', 'Metastability'],
+        formulas: [],
+        examples: ['D Latch vs D Flip-Flop waveforms.'],
         content: `
 # Sequential Logic Circuits
 
 Unlike combinational circuits, sequential circuits have **memory**. The output depends on the current inputs AND the previous state of the circuit.
 
 ## Key Concepts
-- **Clock:** A periodic square wave signal used to synchronize the state changes in a sequential circuit.
+- **Clock:** A periodic square wave signal used to synchronize the state changes.
 - **State:** The current binary values stored in the memory elements.
-
-## Latches vs Flip-Flops
-- **Latches:** Level-sensitive. The output can change continuously as long as the enable signal is asserted.
-- **Flip-Flops:** Edge-triggered. The output only changes at the exact moment the clock transitions from 0-to-1 (Rising Edge) or 1-to-0 (Falling Edge).
-
-## Setup and Hold Times
-- **Setup Time (ts):** The minimum time the data input must be stable BEFORE the clock edge arrives.
-- **Hold Time (th):** The minimum time the data input must remain stable AFTER the clock edge has occurred.
-- Violating these times leads to **metastability**, where the output hovers between 0 and 1 unpredictably.
-
-## Applications
-Sequential circuits form the basis for counters, registers, state machines, and all microprocessor memory architecture.
-        `
+        `,
+        questions2Mark: [
+          'What is the difference between sequential and combinational logic?',
+          'Define Setup and Hold time.'
+        ],
+        questions5Mark: [
+          'Explain the difference between a Latch and a Flip-Flop.',
+          'Discuss metastability in sequential circuits.'
+        ],
+        questions10Mark: [
+          'Draw and explain the timing diagrams for Level-Triggered and Edge-Triggered sequential circuits.'
+        ],
+        quickRevision: [
+          'Latches are level-sensitive.',
+          'Flip-flops are edge-triggered.',
+          'Setup time: data stable BEFORE clock edge.'
+        ],
+        mcqs: [
+          {
+            question: 'Which of the following is edge-triggered?',
+            options: ['Latch', 'Flip-Flop', 'MUX', 'Decoder'],
+            correctAnswer: 'Flip-Flop',
+            explanation: 'Latches are level-sensitive, while Flip-Flops are edge-triggered.'
+          }
+        ]
       },
       {
-        title: '6. Flip-Flops',
+        chapterNumber: 6,
+        title: 'Flip-Flops',
+        shortDescription: 'Basic 1-bit memory elements: SR, JK, D, and T.',
+        difficulty: 'Hard',
+        examImportance: 'High',
+        topics: ['SR Flip-Flop', 'JK Flip-Flop', 'D Flip-Flop', 'T Flip-Flop'],
+        importantConcepts: ['Race Around Condition', 'Master-Slave configuration', 'Excitation Tables'],
+        formulas: ['Q(next) = D', 'Q(next) = JQ\' + K\'Q'],
+        examples: ['Convert a JK flip-flop to a D flip-flop by connecting J=D and K=D\'.'],
         content: `
 # Flip-Flops
 
 Flip-flops are the fundamental 1-bit memory elements in sequential circuits.
 
-## SR Flip-Flop (Set-Reset)
-- **S=1, R=0:** Sets Q to 1.
-- **S=0, R=1:** Resets Q to 0.
-- **S=0, R=0:** Holds previous state.
-- **S=1, R=1:** Invalid/Forbidden state (race condition).
-
 ## JK Flip-Flop
 Improves upon the SR flip-flop by resolving the invalid state.
-- **J=1, K=1:** Toggles the output (Q becomes Q').
 - **Race Around Condition:** In level-triggered JK latches, if J=K=1 and the clock pulse is too long, the output toggles multiple times unpredictably. Solved by using edge-triggering or a Master-Slave configuration.
-
-## D Flip-Flop (Data)
-The output Q simply follows the input D at the clock edge. 
-- It acts as a basic delay or 1-bit storage cell.
-- Heavily used in shift registers and microprocessor data paths.
-
-## T Flip-Flop (Toggle)
-- **T=0:** Holds state.
-- **T=1:** Toggles state on every clock edge.
-- Very useful for designing binary counters because toggling is the basis of counting.
-
-**Excitation Tables:** While a truth table gives the next state based on current inputs, an excitation table gives the required inputs to achieve a specific state transition.
-        `
+        `,
+        questions2Mark: [
+          'What is a race-around condition?',
+          'What is the primary function of a D flip-flop?'
+        ],
+        questions5Mark: [
+          'Explain the Master-Slave JK flip-flop architecture.',
+          'Draw the excitation table for SR, JK, D, and T flip-flops.'
+        ],
+        questions10Mark: [
+          'Describe the process of converting one type of flip-flop into another (e.g., SR to JK).'
+        ],
+        quickRevision: [
+          'J=1, K=1 toggles output.',
+          'T=1 toggles output.',
+          'Race around condition occurs in level-triggered JK when J=1, K=1.'
+        ],
+        mcqs: [
+          {
+            question: 'What happens when J=1 and K=1 in a JK flip-flop?',
+            options: ['Sets to 1', 'Resets to 0', 'Holds state', 'Toggles state'],
+            correctAnswer: 'Toggles state',
+            explanation: 'When both J and K are HIGH, the output Q flips its state.'
+          }
+        ]
       },
       {
-        title: '7. Registers and Shift Registers',
+        chapterNumber: 7,
+        title: 'Registers and Shift Registers',
+        shortDescription: 'Storing and shifting multiple bits of data.',
+        difficulty: 'Medium',
+        examImportance: 'Medium',
+        topics: ['SISO', 'SIPO', 'PISO', 'PIPO', 'Universal Shift Register'],
+        importantConcepts: ['Serial vs Parallel Data', 'Bidirectional shifting'],
+        formulas: [],
+        examples: ['Using a Shift Register to multiply by 2 (Shift Left).'],
         content: `
 # Registers and Shift Registers
 
-A **register** is a group of flip-flops connected together to store multiple bits of data. An N-bit register uses N flip-flops.
-
-## Shift Registers
-A shift register allows the stored data to be shifted left or right by one bit position on every clock pulse.
+A **register** is a group of flip-flops connected together to store multiple bits of data.
 
 ### Types of Shift Registers
-1. **SISO (Serial-In, Serial-Out):** Data is shifted in one bit at a time and exits one bit at a time. Used to create digital time delays.
-2. **SIPO (Serial-In, Parallel-Out):** Data is shifted in serially, but all bits can be read simultaneously. Used for serial-to-parallel conversion.
-3. **PISO (Parallel-In, Serial-Out):** All bits are loaded at once, then shifted out serially. Used in transmitters (like UART) to send parallel data over a single wire.
-4. **PIPO (Parallel-In, Parallel-Out):** Simply stores data. Loads and reads all bits at once. (Effectively a standard register).
-
-## Universal Shift Register
-A bidirectional register that can operate in all four modes (SISO, SIPO, PISO, PIPO) depending on multiplexed control signals.
-
-## Applications
-- Data format conversion (Serial/Parallel).
-- Arithmetic operations (Shifting left by 1 bit multiplies the binary number by 2; shifting right divides by 2).
-- PRBS (Pseudo-Random Binary Sequence) generation.
-        `
+1. **SISO:** Serial-In, Serial-Out
+2. **SIPO:** Serial-In, Parallel-Out
+3. **PISO:** Parallel-In, Serial-Out
+4. **PIPO:** Parallel-In, Parallel-Out
+        `,
+        questions2Mark: [
+          'What is a shift register?',
+          'List the four types of shift registers.'
+        ],
+        questions5Mark: [
+          'Explain the operation of a Universal Shift Register.',
+          'How can shift registers be used for arithmetic operations?'
+        ],
+        questions10Mark: [
+          'Design a 4-bit bidirectional shift register with parallel load capabilities.'
+        ],
+        quickRevision: [
+          'Shift Left = Multiply by 2.',
+          'Shift Right = Divide by 2.',
+          'SIPO is used for Serial-to-Parallel conversion.'
+        ],
+        mcqs: [
+          {
+            question: 'Which shift register converts serial data to parallel data?',
+            options: ['SISO', 'SIPO', 'PISO', 'PIPO'],
+            correctAnswer: 'SIPO',
+            explanation: 'Serial-In, Parallel-Out (SIPO) takes in a stream of bits one by one and outputs them all simultaneously.'
+          }
+        ]
       },
       {
-        title: '8. Counters',
+        chapterNumber: 8,
+        title: 'Counters',
+        shortDescription: 'Sequential circuits that progress through a sequence of states.',
+        difficulty: 'Hard',
+        examImportance: 'High',
+        topics: ['Asynchronous Counters', 'Synchronous Counters', 'Modulus Counters', 'Ring Counters'],
+        importantConcepts: ['Ripple delay', 'Mod-N counting', 'State diagrams'],
+        formulas: ['Max count for n bits = 2^n - 1'],
+        examples: ['Design a Mod-10 (Decade) counter.'],
         content: `
 # Counters
 
-A counter is a sequential circuit that proceeds through a predetermined sequence of states upon the application of clock pulses.
+A counter is a sequential circuit that proceeds through a predetermined sequence of states.
 
 ## Asynchronous (Ripple) Counters
-The clock signal is only applied to the first flip-flop. The output of one flip-flop acts as the clock for the next.
-- **Advantage:** Simple design, fewer logic gates.
-- **Disadvantage:** The propagation delay accumulates as the signal ripples down the chain. If the clock is too fast, the counter will fail. Causes "glitches" in decoding logic.
-
-## Synchronous Counters
-The same master clock signal is applied simultaneously to ALL flip-flops.
-- **Advantage:** Very fast, no accumulated ripple delay. Safe to decode.
-- **Disadvantage:** Requires more complex combinational logic (AND gates) to determine the next state for the J-K or T inputs.
-
-## Specialized Counters
-- **Modulus (Mod-N) Counter:** A counter that resets back to zero after reaching N states. A standard 4-bit counter is Mod-16. A BCD decade counter is a Mod-10 counter (counts 0 to 9, then resets).
-- **Ring Counter:** A shift register where the output of the last FF is connected to the input of the first. A single '1' circulates through the register.
-- **Johnson Counter (Twisted Ring):** The inverted output of the last FF is fed back to the first. Produces a specific sequence of overlapping 1s and 0s.
-
-## Counter Design
-Synchronous counters are designed using a state diagram, state table, excitation tables for the chosen flip-flops, and K-maps to derive the combinational logic.
-        `
+The clock signal is only applied to the first flip-flop.
+- **Advantage:** Simple design.
+- **Disadvantage:** Propagation delay accumulates.
+        `,
+        questions2Mark: [
+          'What is a Mod-N counter?',
+          'What is the difference between synchronous and asynchronous counters?'
+        ],
+        questions5Mark: [
+          'Explain the operation of a 4-bit Johnson counter.',
+          'Design a Mod-10 (Decade) Ripple Counter.'
+        ],
+        questions10Mark: [
+          'Design a 3-bit Synchronous Up/Down counter using JK flip-flops.'
+        ],
+        quickRevision: [
+          'Asynchronous = Ripple delay (slower).',
+          'Synchronous = Master clock for all FFs (faster).',
+          'Ring Counter circulates a single 1.'
+        ],
+        mcqs: [
+          {
+            question: 'In a ripple counter, the clock is applied to:',
+            options: ['All flip-flops simultaneously', 'Only the first flip-flop', 'Only the last flip-flop', 'Alternate flip-flops'],
+            correctAnswer: 'Only the first flip-flop',
+            explanation: 'In ripple (asynchronous) counters, only the first stage receives the main clock; subsequent stages are clocked by the previous stage\'s output.'
+          }
+        ]
       },
       {
-        title: '9. Memories and Programmable Logic Devices',
+        chapterNumber: 9,
+        title: 'Memories and Programmable Logic Devices',
+        shortDescription: 'Volatile, non-volatile memories, and PLDs.',
+        difficulty: 'Medium',
+        examImportance: 'Medium',
+        topics: ['RAM', 'ROM', 'PLA', 'PAL', 'FPGA'],
+        importantConcepts: ['SRAM vs DRAM', 'Programmable Logic Arrays'],
+        formulas: [],
+        examples: ['Implementing a boolean function using a PLA.'],
         content: `
 # Memories and Programmable Logic Devices
 
 ## Memory Classification
-Memory is broadly classified into Volatile (loses data without power) and Non-Volatile (retains data without power).
-
-### RAM (Volatile)
-- **SRAM (Static RAM):** Built using cross-coupled inverters (flip-flops). Very fast, but takes up more silicon area (6 transistors per cell). Used for CPU Cache.
-- **DRAM (Dynamic RAM):** Built using a single transistor and a capacitor. The capacitor leaks charge, so it must be periodically refreshed. Slower, but extremely dense and cheap. Used for Main System Memory.
-
-### ROM (Non-Volatile)
-- **Mask ROM:** Data is permanently etched into the silicon during manufacturing.
-- **PROM:** Programmable once by blowing internal fuses.
-- **EPROM:** Erasable using UV light.
-- **EEPROM / Flash:** Electrically erasable. Flash is a block-erasable EEPROM, used heavily in SSDs and USB drives.
+- **SRAM:** Fast, uses flip-flops, used for Cache.
+- **DRAM:** Dense, uses capacitors, needs refresh, used for Main Memory.
 
 ## Programmable Logic Devices (PLDs)
-Standard ICs have fixed logic. PLDs allow the hardware logic to be configured by the user.
-
-- **PLA (Programmable Logic Array):** Both the AND array and OR array are programmable. Highly flexible but slower.
-- **PAL (Programmable Array Logic):** Programmable AND array, but a fixed OR array. Faster and cheaper than PLA.
-- **FPGA (Field Programmable Gate Array):** Contains thousands of Configurable Logic Blocks (CLBs), programmable interconnects, and I/O blocks. FPGAs can implement massive digital systems, including entire custom microprocessors.
-        `
+- **PLA:** Programmable AND, Programmable OR.
+- **PAL:** Programmable AND, Fixed OR.
+        `,
+        questions2Mark: [
+          'State the main difference between SRAM and DRAM.',
+          'What is an FPGA?'
+        ],
+        questions5Mark: [
+          'Differentiate between PLA and PAL.',
+          'Explain the structure of a ROM.'
+        ],
+        questions10Mark: [
+          'Describe the internal architecture of an FPGA and its Configurable Logic Blocks (CLBs).'
+        ],
+        quickRevision: [
+          'SRAM is faster but less dense than DRAM.',
+          'DRAM requires periodic refreshing.',
+          'PLA = Prog AND, Prog OR. PAL = Prog AND, Fixed OR.'
+        ],
+        mcqs: [
+          {
+            question: 'Which type of memory requires periodic refreshing?',
+            options: ['SRAM', 'DRAM', 'ROM', 'EEPROM'],
+            correctAnswer: 'DRAM',
+            explanation: 'DRAM stores data in leaking capacitors, requiring periodic refresh cycles to maintain the data.'
+          }
+        ]
       },
       {
-        title: '10. Analog-to-Digital and Digital-to-Analog Converters',
+        chapterNumber: 10,
+        title: 'Analog-to-Digital and Digital-to-Analog Converters',
+        shortDescription: 'Bridging the analog real world with digital systems.',
+        difficulty: 'Hard',
+        examImportance: 'High',
+        topics: ['DAC', 'ADC', 'Flash ADC', 'SAR ADC', 'Nyquist Theorem'],
+        importantConcepts: ['Quantization', 'Sampling Rate'],
+        formulas: ['fs >= 2 * fmax'],
+        examples: ['Successive Approximation search for an analog value.'],
         content: `
 # ADC and DAC
 
-Real-world signals (audio, sensors) are analog, but processors are digital. Converters bridge this gap.
-
 ## DAC (Digital-to-Analog Converter)
-Converts a digital binary word into a proportional continuous analog voltage.
-- **Weighted Resistor DAC:** Uses a summing op-amp with binary-weighted resistors (R, 2R, 4R, 8R). Difficult to manufacture precisely for high resolutions because the resistor values span a huge range.
-- **R-2R Ladder DAC:** Uses only two resistor values (R and 2R) arranged in a ladder network. Much easier to fabricate accurately in ICs.
+- **Weighted Resistor DAC:** Uses a summing op-amp with binary-weighted resistors.
+- **R-2R Ladder DAC:** Uses only two resistor values.
 
 ## ADC (Analog-to-Digital Converter)
-Converts an analog voltage into a digital binary code through Sampling, Quantization, and Encoding.
-- **Flash ADC:** The fastest type. Uses \`2^n - 1\` comparators in parallel. Very expensive and power-hungry for high resolutions.
-- **Successive Approximation (SAR) ADC:** Uses a binary search algorithm, comparing the input to an internal DAC. Good balance of speed and complexity. Takes \`N\` clock cycles for an \`N\`-bit conversion.
-- **Dual Slope ADC:** Integrates the input voltage, then discharges it at a known rate. Very slow, but highly accurate and immune to noise. Commonly used in digital multimeters.
-
-## Nyquist Theorem
-To accurately reconstruct an analog signal, it must be sampled at a frequency (\`fs\`) that is at least twice the maximum frequency component (\`fmax\`) present in the signal. 
-\`fs >= 2 * fmax\`
-        `
+- **Flash ADC:** The fastest type.
+- **Successive Approximation (SAR) ADC:** Uses a binary search algorithm.
+        `,
+        questions2Mark: [
+          'State the Nyquist Sampling Theorem.',
+          'What is quantization error?'
+        ],
+        questions5Mark: [
+          'Explain the operation of an R-2R Ladder DAC.',
+          'Compare Flash ADC with Successive Approximation ADC.'
+        ],
+        questions10Mark: [
+          'Explain the working principle of a Dual Slope ADC with relevant waveforms and advantages.'
+        ],
+        quickRevision: [
+          'Flash ADC is the fastest but most complex.',
+          'Dual Slope ADC is the most accurate but slowest.',
+          'R-2R ladder avoids the need for widely varying resistor values.'
+        ],
+        mcqs: [
+          {
+            question: 'Which ADC is known for being the fastest?',
+            options: ['Dual Slope', 'SAR', 'Flash', 'Counter-Ramp'],
+            correctAnswer: 'Flash',
+            explanation: 'Flash ADC uses parallel comparators to determine the digital value simultaneously, making it the fastest ADC architecture.'
+          }
+        ]
       },
       {
-        title: '11. Logic Families',
+        chapterNumber: 11,
+        title: 'Digital Logic Families',
+        shortDescription: 'Circuit-level implementation of logic gates (TTL, CMOS).',
+        difficulty: 'Medium',
+        examImportance: 'Medium',
+        topics: ['TTL', 'CMOS', 'Performance Parameters'],
+        importantConcepts: ['Propagation Delay', 'Power Dissipation', 'Fan-out', 'Noise Margin'],
+        formulas: ['Speed-Power Product = Delay * Power'],
+        examples: ['Calculating the noise margin from V_IH, V_IL, V_OH, V_OL.'],
         content: `
 # Digital Logic Families
 
-A logic family is a group of electronic logic gates constructed using a specific technology. Different families have different trade-offs regarding speed, power, and size.
-
-## Key Performance Parameters
-- **Propagation Delay:** The time it takes for a change at the input to produce a change at the output. Measured in nanoseconds (ns) or picoseconds (ps).
-- **Power Dissipation:** The power consumed by the gate.
-- **Speed-Power Product:** The product of propagation delay and power dissipation. A lower value indicates a better overall logic family.
-- **Fan-in:** The number of inputs a gate has.
-- **Fan-out:** The maximum number of standard inputs that the output of a gate can reliably drive.
-- **Noise Margin:** The maximum noise voltage that can be superimposed on a signal without causing the gate to misinterpret a 0 as a 1, or vice versa.
-
-## Transistor-Transistor Logic (TTL)
-Built using Bipolar Junction Transistors (BJTs).
-- Standardized on a 5V power supply.
-- Faster than early CMOS, but consumes significantly more static power.
+A logic family is a group of electronic logic gates constructed using a specific technology.
 
 ## Complementary Metal-Oxide-Semiconductor (CMOS)
-Built using pairs of P-channel and N-channel MOSFETs.
-- **Advantage:** Extremely low static power consumption. Current only flows during the brief moment when the transistors are switching states.
+- **Advantage:** Extremely low static power consumption.
 - **Advantage:** Very high noise margin and high fan-out.
-- As clock frequencies increase, the dynamic power consumption of CMOS increases significantly due to the charging and discharging of parasitic capacitances.
-- CMOS is the dominant technology in modern microprocessors and memory chips.
-        `
+        `,
+        questions2Mark: [
+          'Define Fan-in and Fan-out.',
+          'What is Noise Margin?'
+        ],
+        questions5Mark: [
+          'Compare TTL and CMOS logic families.',
+          'Explain propagation delay and speed-power product.'
+        ],
+        questions10Mark: [
+          'Draw and explain the circuit diagram of a two-input CMOS NAND gate.'
+        ],
+        quickRevision: [
+          'CMOS consumes almost zero static power.',
+          'TTL uses BJTs, CMOS uses MOSFETs.',
+          'Fan-out is the max number of inputs a gate can drive.'
+        ],
+        mcqs: [
+          {
+            question: 'What is the primary advantage of CMOS over TTL?',
+            options: ['Higher speed', 'Lower static power consumption', 'Higher operating voltage', 'Simpler manufacturing'],
+            correctAnswer: 'Lower static power consumption',
+            explanation: 'CMOS transistors only consume significant power when switching states; their static power consumption is nearly zero.'
+          }
+        ]
       },
       {
-        title: '12. Digital System Design Using Verilog HDL',
+        chapterNumber: 12,
+        title: 'Digital System Design Using Verilog HDL',
+        shortDescription: 'Hardware description languages for modeling digital circuits.',
+        difficulty: 'Medium',
+        examImportance: 'Low',
+        topics: ['Gate-Level Modeling', 'Dataflow Modeling', 'Behavioral Modeling'],
+        importantConcepts: ['Blocking vs Non-Blocking assignments', 'Testbenches'],
+        formulas: [],
+        examples: ['Verilog code for a 2-to-1 Multiplexer.'],
         content: `
 # Digital System Design Using Verilog HDL
 
-Hardware Description Languages (HDLs) allow engineers to describe digital hardware using text rather than drawing schematic diagrams. Verilog is one of the industry standards.
+Hardware Description Languages (HDLs) allow engineers to describe digital hardware using text.
 
 ## Modeling Styles in Verilog
-1. **Gate-Level Modeling:** Describing the circuit using built-in logic gates (and, or, not). Very low level.
-2. **Dataflow Modeling:** Describing how data flows using continuous assignments (\`assign\`). Good for combinational logic.
-3. **Behavioral Modeling:** Describing the algorithmic behavior using procedural blocks (\`always\`, \`initial\`). Very powerful for sequential logic.
-
-## Basic Syntax Example: 2-to-1 MUX
-\`\`\`verilog
-// Dataflow modeling of a 2x1 Multiplexer
-module mux2x1 (
-    input a,
-    input b,
-    input sel,
-    output y
-);
-    
-    // Conditional operator (ternary)
-    assign y = sel ? b : a;
-
-endmodule
-\`\`\`
-
-## Sequential Logic Example: D Flip-Flop
-\`\`\`verilog
-// Behavioral modeling of a D Flip-Flop with asynchronous reset
-module d_ff (
-    input clk,
-    input reset,
-    input d,
-    output reg q
-);
-
-    // Triggered on the rising edge of clock OR the rising edge of reset
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            q <= 1'b0; // Non-blocking assignment for sequential logic
-        end else begin
-            q <= d;
-        end
-    end
-
-endmodule
-\`\`\`
-
-## Simulation and Synthesis
-- **Simulation:** Testing the Verilog code using a Testbench to verify logical correctness before manufacturing.
-- **Synthesis:** The software process of converting the abstract Verilog code into an actual physical gate-level netlist tailored for an FPGA or ASIC.
-        `
+1. **Gate-Level:** Using built-in logic gates (and, or, not).
+2. **Dataflow:** Using continuous assignments (\`assign\`).
+3. **Behavioral:** Using procedural blocks (\`always\`).
+        `,
+        questions2Mark: [
+          'What is the difference between simulation and synthesis?',
+          'What is a testbench?'
+        ],
+        questions5Mark: [
+          'Write a Verilog behavioral model for a D Flip-Flop.',
+          'Explain the difference between blocking (=) and non-blocking (<=) assignments.'
+        ],
+        questions10Mark: [
+          'Write a complete Verilog program (including testbench) for a 4-bit Full Adder using structural modeling.'
+        ],
+        quickRevision: [
+          'Dataflow uses `assign`.',
+          'Behavioral uses `always` blocks.',
+          'Non-blocking (<=) is used for sequential logic.'
+        ],
+        mcqs: [
+          {
+            question: 'In Verilog behavioral modeling for sequential circuits, which assignment operator is recommended?',
+            options: ['=', '==', '<=', '=>'],
+            correctAnswer: '<=',
+            explanation: 'The non-blocking assignment operator (<=) evaluates all RHS expressions concurrently, properly modeling physical hardware registers.'
+          }
+        ]
       }
     ];
 
     for (const chapter of chaptersData) {
-      await Note.create({
-        title: chapter.title,
-        content: chapter.content.trim(),
-        subject: subject._id,
-        author: user._id,
-        isPublic: true
-      });
+      await Note.findOneAndUpdate(
+        { subject: subject._id, chapterNumber: chapter.chapterNumber },
+        {
+          title: chapter.title,
+          shortDescription: chapter.shortDescription,
+          difficulty: chapter.difficulty,
+          examImportance: chapter.examImportance,
+          topics: chapter.topics,
+          importantConcepts: chapter.importantConcepts,
+          formulas: chapter.formulas,
+          examples: chapter.examples,
+          questions2Mark: chapter.questions2Mark,
+          questions5Mark: chapter.questions5Mark,
+          questions10Mark: chapter.questions10Mark,
+          quickRevision: chapter.quickRevision,
+          mcqs: chapter.mcqs,
+          content: chapter.content.trim(),
+          author: user._id,
+          isPublic: true
+        },
+        { upsert: true, new: true }
+      );
     }
 
     console.log('✅ Successfully seeded Digital Electronics study notes.');
