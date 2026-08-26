@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -6,6 +7,10 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const logger = require('./logger/winston');
 const { errorHandler, notFoundHandler } = require('./middleware/error.middleware');
+const connectDB = require('./config/database');
+
+// Connect to Database for Serverless environments (e.g., Vercel)
+connectDB();
 
 const app = express();
 

@@ -41,7 +41,28 @@ export default function Register() {
       toast.success('Registration successful!');
       navigate('/dashboard');
     } catch (error) {
-      const message = error.response?.data?.message || 'Failed to register. Please try again.';
+      console.error('Registration error details:', {
+        message: error.message,
+        response: error.response,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+
+      let message = 'Unable to create your account right now. Please try again.';
+
+      if (!error.response) {
+        message = 'Unable to connect to the server.';
+      } else if (error.response.status === 400) {
+        const backendMessage = error.response.data?.message;
+        if (backendMessage === 'Email already registered' || backendMessage === 'Duplicate field value entered') {
+          message = 'An account with this email already exists.';
+        } else if (backendMessage === 'Validation Error') {
+          message = error.response.data?.errors?.[0] || 'Invalid information provided.';
+        } else {
+          message = backendMessage || message;
+        }
+      }
+
       toast.error(message);
     } finally {
       setIsLoading(false);
