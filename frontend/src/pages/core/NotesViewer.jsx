@@ -210,7 +210,7 @@ export default function NotesViewer() {
             <div className="text-sm font-medium dark:text-gray-200">{progressPercent}% Completed</div>
           </div>
           <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-            <div className="h-full bg-green-500 rounded-full" style={{ width: \`\${progressPercent}%\` }} />
+            <div className="h-full bg-green-500 rounded-full" style={{ width: `${progressPercent}%` }} />
           </div>
         </div>
       </div>
@@ -276,13 +276,13 @@ export default function NotesViewer() {
 
         {/* Sidebar (Only when a note is selected) */}
         {selectedNote && (
-          <div className={\`
+          <div className={`
             absolute md:relative z-20 md:z-0
             w-64 md:w-72 h-full bg-white dark:bg-gray-900 border-r dark:border-gray-800 
             transform transition-transform duration-300 ease-in-out
-            \${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
             flex flex-col
-          \`}>
+          `}>
             <div className="p-4 border-b dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-900/50">
               <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-sm uppercase tracking-wider">Chapters</h3>
               <Button variant="ghost" size="sm" onClick={() => setSelectedNote(null)} className="h-8 px-2 text-xs">Back to Grid</Button>
@@ -307,13 +307,13 @@ export default function NotesViewer() {
                   <button
                     key={note._id}
                     onClick={() => handleSelectNote(note)}
-                    className={\`
+                    className={`
                       w-full flex items-center justify-between text-left px-3 py-2.5 rounded-lg text-sm transition-colors
-                      \${selectedNote?._id === note._id 
+                      ${selectedNote?._id === note._id 
                         ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-medium' 
                         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
                       }
-                    \`}
+                    `}
                   >
                     <div className="flex items-center truncate pr-2">
                       <span className="opacity-50 mr-2 text-xs w-4">{note.chapterNumber}.</span>
@@ -367,26 +367,26 @@ export default function NotesViewer() {
                 <div className="flex overflow-x-auto">
                   <button 
                     onClick={() => setActiveTab('notes')}
-                    className={\`flex items-center justify-center gap-2 flex-1 min-w-[120px] py-3 text-sm font-medium border-b-2 transition-colors \${activeTab === 'notes' ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}\`}
+                    className={`flex items-center justify-center gap-2 flex-1 min-w-[120px] py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'notes' ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
                   >
                     <FileText className="w-4 h-4" /> Notes
                   </button>
                   <button 
                     onClick={() => setActiveTab('revision')}
-                    className={\`flex items-center justify-center gap-2 flex-1 min-w-[120px] py-3 text-sm font-medium border-b-2 transition-colors \${activeTab === 'revision' ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}\`}
+                    className={`flex items-center justify-center gap-2 flex-1 min-w-[120px] py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'revision' ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
                   >
                     <Lightbulb className="w-4 h-4" /> Quick Revision
                   </button>
                   <button 
                     onClick={() => setActiveTab('questions')}
-                    className={\`flex items-center justify-center gap-2 flex-1 min-w-[120px] py-3 text-sm font-medium border-b-2 transition-colors \${activeTab === 'questions' ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}\`}
+                    className={`flex items-center justify-center gap-2 flex-1 min-w-[120px] py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'questions' ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
                   >
                     <HelpCircle className="w-4 h-4" /> Exam Qs
                   </button>
                   {selectedNote.mcqs && selectedNote.mcqs.length > 0 && (
                     <button 
                       onClick={() => setActiveTab('mcqs')}
-                      className={\`flex items-center justify-center gap-2 flex-1 min-w-[120px] py-3 text-sm font-medium border-b-2 transition-colors \${activeTab === 'mcqs' ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}\`}
+                      className={`flex items-center justify-center gap-2 flex-1 min-w-[120px] py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'mcqs' ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
                     >
                       <CheckCircle2 className="w-4 h-4" /> Practice MCQs
                     </button>
