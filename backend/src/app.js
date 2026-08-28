@@ -10,14 +10,30 @@ const { errorHandler, notFoundHandler } = require('./middleware/error.middleware
 const connectDB = require('./config/database');
 
 // Connect to Database for Serverless environments (e.g., Vercel)
-connectDB();
+// connectDB(); // Removed to prevent double connection race condition in Render long-running server
 
 const app = express();
 
 // Security middleware
 app.use(helmet());
+
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+const allowedOrigins = [
+  clientUrl,
+  clientUrl.endsWith('/') ? clientUrl.slice(0, -1) : `${clientUrl}/`,
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests) and allowed origins
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 

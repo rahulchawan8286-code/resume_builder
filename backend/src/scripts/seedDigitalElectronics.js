@@ -7,8 +7,16 @@ const User = require('../models/User');
 const seedDigitalElectronics = async () => {
   try {
     if (mongoose.connection.readyState === 0) {
+      const uri = process.env.MONGODB_URI;
+      if (!uri) {
+        throw new Error('MONGODB_URI environment variable is missing.');
+      }
+      if (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://')) {
+        throw new Error('Invalid MONGODB_URI. It must start with "mongodb://" or "mongodb+srv://". Do not use a placeholder.');
+      }
+      
       console.log('Connecting to MongoDB...');
-      await mongoose.connect(process.env.MONGODB_URI);
+      await mongoose.connect(uri);
     }
     console.log('Connected to MongoDB.');
 
@@ -26,9 +34,9 @@ const seedDigitalElectronics = async () => {
       }
     }
 
-    let subject = await Subject.findOne({ code: 'ECE-DE' });
+    let subject = await Subject.findOne({ name: 'Digital Electronics' });
     if (!subject) {
-      subject = await Subject.findOne({ name: 'Digital Electronics' });
+      subject = await Subject.findOne({ code: 'ECE-DE' });
     }
     
     if (!subject) {
