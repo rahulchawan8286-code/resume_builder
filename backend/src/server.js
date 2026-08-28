@@ -28,6 +28,20 @@ connectDB().then(async () => {
       logger.info('Digital Electronics subject missing. Auto-seeding...');
       await seedDigitalElectronics();
     }
+
+    // Auto-seed Analog Electronics if empty
+    let analogSubject = await Subject.findOne({ name: 'Analog Electronics' });
+    if (!analogSubject) {
+      analogSubject = await Subject.findOne({ code: 'ECE-AE' });
+    }
+    if (analogSubject) {
+      const analogCount = await Note.countDocuments({ subject: analogSubject._id });
+      if (analogCount === 0) {
+        logger.info('Auto-seeding Analog Electronics notes into production database...');
+        const seedAnalogElectronics = require('./scripts/seedAnalogElectronics');
+        await seedAnalogElectronics();
+      }
+    }
   } catch (error) {
     logger.error('Failed to auto-seed notes:', error);
   }
