@@ -1,10 +1,27 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Play } from 'lucide-react';
 
 export default function PracticeTest() {
-  const { id } = useParams();
+  const { id } = useParams(); // This is the subject ID
+  const [quizId, setQuizId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    import('../../api/quizService').then(({ quizService }) => {
+      quizService.getQuizzes(id).then(quizzes => {
+        if (quizzes && quizzes.length > 0) {
+          setQuizId(quizzes[0]._id);
+        }
+        setIsLoading(false);
+      }).catch(err => {
+        console.error('Failed to fetch quiz', err);
+        setIsLoading(false);
+      });
+    });
+  }, [id]);
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 py-12">
@@ -31,8 +48,12 @@ export default function PracticeTest() {
               <p className="font-bold text-xl dark:text-white">70%</p>
             </div>
           </div>
-          <Button size="lg" className="bg-indigo-600 text-white w-full max-w-sm mt-8" asChild>
-            <Link to={`/placement/quiz/${id}`}>Start Test Now</Link>
+          <Button size="lg" className="bg-indigo-600 text-white w-full max-w-sm mt-8" asChild disabled={isLoading || !quizId}>
+            {quizId ? (
+              <Link to={`/placement/quiz/${quizId}`}>Start Test Now</Link>
+            ) : (
+              <span>{isLoading ? 'Loading...' : 'No Test Available'}</span>
+            )}
           </Button>
         </CardContent>
       </Card>
