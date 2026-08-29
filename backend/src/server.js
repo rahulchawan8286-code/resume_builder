@@ -26,12 +26,25 @@ connectDB().then(async () => {
       }
       
       // Auto-seed the Practice Test Quiz if it does not exist
+      logger.info('Digital Electronics quiz seed check started');
       const Quiz = require('./models/Quiz');
-      const quizCount = await Quiz.countDocuments({ subject: subject._id, title: 'Digital Electronics Practice Test' });
-      if (quizCount === 0) {
+      const Question = require('./models/Question');
+      const practiceQuiz = await Quiz.findOne({ subject: subject._id, title: 'Digital Electronics Practice Test' });
+      
+      let needsSeed = true;
+      if (practiceQuiz) {
+        const questionCount = await Question.countDocuments({ quiz: practiceQuiz._id });
+        if (questionCount === 30) {
+          needsSeed = false;
+          logger.info('Digital Electronics quiz already exists with 30 questions');
+        }
+      }
+
+      if (needsSeed) {
         logger.info('Auto-seeding Digital Electronics Quiz into production database...');
         const seedDigitalElectronicsQuiz = require('./scripts/seedDigitalElectronicsQuiz');
         await seedDigitalElectronicsQuiz();
+        logger.info('Digital Electronics quiz seeded successfully with 30 questions');
       }
     } else {
       logger.info('Digital Electronics subject missing. Auto-seeding...');
