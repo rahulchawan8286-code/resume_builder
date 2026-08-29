@@ -24,6 +24,15 @@ connectDB().then(async () => {
         logger.info('Auto-seeding Digital Electronics notes into production database...');
         await seedDigitalElectronics();
       }
+      
+      // Auto-seed the Practice Test Quiz if it does not exist
+      const Quiz = require('./models/Quiz');
+      const quizCount = await Quiz.countDocuments({ subject: subject._id, title: 'Digital Electronics Practice Test' });
+      if (quizCount === 0) {
+        logger.info('Auto-seeding Digital Electronics Quiz into production database...');
+        const seedDigitalElectronicsQuiz = require('./scripts/seedDigitalElectronicsQuiz');
+        await seedDigitalElectronicsQuiz();
+      }
     } else {
       logger.info('Digital Electronics subject missing. Auto-seeding...');
       await seedDigitalElectronics();
