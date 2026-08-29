@@ -5,7 +5,11 @@ const Question = require('../models/Question');
 const Subject = require('../models/Subject');
 
 const seedDigitalElectronicsQuiz = async () => {
+  let isStandalone = false;
   try {
+    isStandalone = require.main === module;
+    
+    // Only connect if completely disconnected
     if (mongoose.connection.readyState === 0) {
       const uri = process.env.MONGODB_URI;
       if (!uri) {
@@ -14,9 +18,15 @@ const seedDigitalElectronicsQuiz = async () => {
       console.log('Connecting to MongoDB...');
       await mongoose.connect(uri);
     }
-    console.log('Connected to MongoDB.');
+    
+    // Wait for connecting state to finish if it's connecting
+    if (mongoose.connection.readyState === 2) {
+      await new Promise(resolve => mongoose.connection.once('connected', resolve));
+    }
 
-    // Find Digital Electronics subject (prefer name to avoid hardcoding IDs)
+    console.log('Connected to MongoDB. Starting Digital Electronics Quiz seed...');
+
+    // Find Digital Electronics subject
     let subject = await Subject.findOne({ name: 'Digital Electronics' });
     if (!subject) {
       subject = await Subject.findOne({ code: 'ECE-DE' });
@@ -268,144 +278,120 @@ const seedDigitalElectronicsQuiz = async () => {
         difficulty: 'easy'
       },
       {
-        text: 'To avoid the race around condition in JK flip-flops, one can use:',
+        text: 'To completely eliminate the race around condition in a JK flip-flop, the most common structural solution is to use:',
         options: [
-          { text: 'Master-Slave configuration', isCorrect: true },
-          { text: 'Positive edge triggering', isCorrect: false },
-          { text: 'Negative edge triggering', isCorrect: false },
-          { text: 'All of the above', isCorrect: true } // Technically MS or edge triggering prevents it, but MS is the classic structural fix. I will set MS as correct and change options.
-        ]
+          { text: 'A Master-Slave configuration', isCorrect: true },
+          { text: 'A D-latch', isCorrect: false },
+          { text: 'A longer clock pulse', isCorrect: false },
+          { text: 'A higher voltage supply', isCorrect: false }
+        ],
+        explanation: 'A master-slave JK flip-flop uses two stages, reading inputs on one edge and updating outputs on the other, effectively preventing race conditions.',
+        difficulty: 'medium'
+      },
+      {
+        text: 'What is the primary advantage of ECL (Emitter-Coupled Logic) over TTL?',
+        options: [
+          { text: 'Lower power consumption', isCorrect: false },
+          { text: 'Higher noise margin', isCorrect: false },
+          { text: 'Faster switching speed', isCorrect: true },
+          { text: 'Higher packing density', isCorrect: false }
+        ],
+        explanation: 'ECL uses transistors in their active region (non-saturated), avoiding storage time delays, making it the fastest logic family.',
+        difficulty: 'hard'
+      },
+      {
+        text: 'Which device can convert analog signals into digital format?',
+        options: [
+          { text: 'DAC', isCorrect: false },
+          { text: 'ADC', isCorrect: true },
+          { text: 'Multiplexer', isCorrect: false },
+          { text: 'Decoder', isCorrect: false }
+        ],
+        explanation: 'ADC stands for Analog-to-Digital Converter.',
+        difficulty: 'easy'
+      },
+      {
+        text: 'In a Flash ADC with n bits of resolution, how many comparators are required?',
+        options: [
+          { text: '2^n', isCorrect: false },
+          { text: '2^n - 1', isCorrect: true },
+          { text: 'n', isCorrect: false },
+          { text: 'n^2', isCorrect: false }
+        ],
+        explanation: 'A flash ADC requires 2^n - 1 comparators to instantly compare the input analog voltage against a resistor ladder reference.',
+        difficulty: 'hard'
+      },
+      {
+        text: 'The minimum number of NAND gates required to implement an XOR gate is:',
+        options: [
+          { text: '3', isCorrect: false },
+          { text: '4', isCorrect: true },
+          { text: '5', isCorrect: false },
+          { text: '6', isCorrect: false }
+        ],
+        explanation: 'It takes exactly 4 two-input NAND gates to implement a 2-input XOR function.',
+        difficulty: 'hard'
+      },
+      {
+        text: 'A circuit that compares two binary numbers and determines if they are equal or which is greater is a:',
+        options: [
+          { text: 'Multiplexer', isCorrect: false },
+          { text: 'Decoder', isCorrect: false },
+          { text: 'Magnitude Comparator', isCorrect: true },
+          { text: 'Arithmetic Logic Unit', isCorrect: false }
+        ],
+        explanation: 'A magnitude comparator generates A=B, A>B, and A<B signals.',
+        difficulty: 'easy'
+      },
+      {
+        text: 'If a 4-bit synchronous counter starts at 0000, what will be its state after 5 clock pulses?',
+        options: [
+          { text: '0101', isCorrect: true },
+          { text: '1010', isCorrect: false },
+          { text: '0110', isCorrect: false },
+          { text: '0100', isCorrect: false }
+        ],
+        explanation: 'It counts in binary. After 5 pulses, the binary value is 5, which is 0101.',
+        difficulty: 'easy'
+      },
+      {
+        text: 'Which logic gate is equivalent to a series circuit of two switches?',
+        options: [
+          { text: 'OR Gate', isCorrect: false },
+          { text: 'AND Gate', isCorrect: true },
+          { text: 'NOR Gate', isCorrect: false },
+          { text: 'NAND Gate', isCorrect: false }
+        ],
+        explanation: 'In a series circuit, current flows only if both switch A AND switch B are closed.',
+        difficulty: 'easy'
+      },
+      {
+        text: 'What is the base of the Hexadecimal number system?',
+        options: [
+          { text: '2', isCorrect: false },
+          { text: '8', isCorrect: false },
+          { text: '10', isCorrect: false },
+          { text: '16', isCorrect: true }
+        ],
+        explanation: 'Hexadecimal represents values from 0 to 15 using base 16 (0-9 and A-F).',
+        difficulty: 'easy'
+      },
+      {
+        text: 'What type of memory is SRAM?',
+        options: [
+          { text: 'Non-volatile', isCorrect: false },
+          { text: 'Volatile', isCorrect: true },
+          { text: 'Read-only', isCorrect: false },
+          { text: 'Magnetic', isCorrect: false }
+        ],
+        explanation: 'Static Random Access Memory (SRAM) is volatile memory that loses data when power is removed.',
+        difficulty: 'easy'
       }
     ];
 
-    // Let me refine MCQ 21 and complete the 30.
-    mcqs[20] = {
-      text: 'To completely eliminate the race around condition in a JK flip-flop, the most common structural solution is to use:',
-      options: [
-        { text: 'A Master-Slave configuration', isCorrect: true },
-        { text: 'A D-latch', isCorrect: false },
-        { text: 'A longer clock pulse', isCorrect: false },
-        { text: 'A higher voltage supply', isCorrect: false }
-      ],
-      explanation: 'A master-slave JK flip-flop uses two stages, reading inputs on one edge and updating outputs on the other, effectively preventing race conditions.',
-      difficulty: 'medium'
-    };
-
-    mcqs.push({
-      text: 'What is the primary advantage of ECL (Emitter-Coupled Logic) over TTL?',
-      options: [
-        { text: 'Lower power consumption', isCorrect: false },
-        { text: 'Higher noise margin', isCorrect: false },
-        { text: 'Faster switching speed', isCorrect: true },
-        { text: 'Higher packing density', isCorrect: false }
-      ],
-      explanation: 'ECL uses transistors in their active region (non-saturated), avoiding storage time delays, making it the fastest logic family.',
-      difficulty: 'hard'
-    });
-
-    mcqs.push({
-      text: 'Which device can convert analog signals into digital format?',
-      options: [
-        { text: 'DAC', isCorrect: false },
-        { text: 'ADC', isCorrect: true },
-        { text: 'Multiplexer', isCorrect: false },
-        { text: 'Decoder', isCorrect: false }
-      ],
-      explanation: 'ADC stands for Analog-to-Digital Converter.',
-      difficulty: 'easy'
-    });
-
-    mcqs.push({
-      text: 'In a Flash ADC with n bits of resolution, how many comparators are required?',
-      options: [
-        { text: '2^n', isCorrect: false },
-        { text: '2^n - 1', isCorrect: true },
-        { text: 'n', isCorrect: false },
-        { text: 'n^2', isCorrect: false }
-      ],
-      explanation: 'A flash ADC requires 2^n - 1 comparators to instantly compare the input analog voltage against a resistor ladder reference.',
-      difficulty: 'hard'
-    });
-
-    mcqs.push({
-      text: 'The minimum number of NAND gates required to implement an XOR gate is:',
-      options: [
-        { text: '3', isCorrect: false },
-        { text: '4', isCorrect: true },
-        { text: '5', isCorrect: false },
-        { text: '6', isCorrect: false }
-      ],
-      explanation: 'It takes exactly 4 two-input NAND gates to implement a 2-input XOR function.',
-      difficulty: 'hard'
-    });
-
-    mcqs.push({
-      text: 'A circuit that compares two binary numbers and determines if they are equal or which is greater is a:',
-      options: [
-        { text: 'Multiplexer', isCorrect: false },
-        { text: 'Decoder', isCorrect: false },
-        { text: 'Magnitude Comparator', isCorrect: true },
-        { text: 'Arithmetic Logic Unit', isCorrect: false }
-      ],
-      explanation: 'A magnitude comparator generates A=B, A>B, and A<B signals.',
-      difficulty: 'easy'
-    });
-
-    mcqs.push({
-      text: 'If a 4-bit synchronous counter starts at 0000, what will be its state after 5 clock pulses?',
-      options: [
-        { text: '0101', isCorrect: true },
-        { text: '1010', isCorrect: false },
-        { text: '0110', isCorrect: false },
-        { text: '0100', isCorrect: false }
-      ],
-      explanation: 'It counts in binary. After 5 pulses, the binary value is 5, which is 0101.',
-      difficulty: 'easy'
-    });
-
-    mcqs.push({
-      text: 'Which logic gate is equivalent to a series circuit of two switches?',
-      options: [
-        { text: 'OR Gate', isCorrect: false },
-        { text: 'AND Gate', isCorrect: true },
-        { text: 'NOR Gate', isCorrect: false },
-        { text: 'NAND Gate', isCorrect: false }
-      ],
-      explanation: 'In a series circuit, current flows only if both switch A AND switch B are closed.',
-      difficulty: 'easy'
-    });
-
-    mcqs.push({
-      text: 'What is the base of the Hexadecimal number system?',
-      options: [
-        { text: '2', isCorrect: false },
-        { text: '8', isCorrect: false },
-        { text: '10', isCorrect: false },
-        { text: '16', isCorrect: true }
-      ],
-      explanation: 'Hexadecimal represents values from 0 to 15 using base 16 (0-9 and A-F).',
-      difficulty: 'easy'
-    });
-
-    mcqs.push({
-      text: 'What type of memory is SRAM?',
-      options: [
-        { text: 'Non-volatile', isCorrect: false },
-        { text: 'Volatile', isCorrect: true },
-        { text: 'Read-only', isCorrect: false },
-        { text: 'Magnetic', isCorrect: false }
-      ],
-      explanation: 'Static Random Access Memory (SRAM) is volatile memory that loses data when power is removed.',
-      difficulty: 'easy'
-    });
-
-    // We have 30 MCQs now.
-    
-    // Process upserts efficiently to avoid duplicates
     let createdCount = 0;
     for (const mcq of mcqs) {
-      // Find question by text and quiz to ensure idempotency
-      const result = await Question.findOneAndUpdate(
+      await Question.findOneAndUpdate(
         { quiz: quiz._id, text: mcq.text },
         {
           ...mcq,
@@ -417,12 +403,24 @@ const seedDigitalElectronicsQuiz = async () => {
     }
 
     console.log(`✅ Successfully seeded ${createdCount} MCQs for ${quiz.title}`);
-    console.log('🎉 Digital Electronics Quiz Seeding Complete.');
+
+    // Self-verification
+    const verifyCount = await Question.countDocuments({ quiz: quiz._id });
+    if (verifyCount !== 30) {
+      throw new Error(`Production quiz verification failed: Expected 30 questions, found ${verifyCount}`);
+    }
+
+    console.log(`🎉 Digital Electronics Quiz Seeding Complete and Verified (${verifyCount}/30).`);
     
-    if (require.main === module) process.exit(0);
+    if (isStandalone) {
+      await mongoose.connection.close();
+      process.exit(0);
+    }
   } catch (error) {
     console.error('Error seeding quiz:', error);
-    if (require.main === module) process.exit(1);
+    if (isStandalone) {
+      process.exit(1);
+    }
     throw error;
   }
 };

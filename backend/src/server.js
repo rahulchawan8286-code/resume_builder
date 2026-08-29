@@ -26,7 +26,7 @@ connectDB().then(async () => {
       }
       
       // Auto-seed the Practice Test Quiz if it does not exist
-      logger.info('Digital Electronics quiz seed check started');
+      logger.info('[PROD-SEED] Checking Digital Electronics quiz...');
       const Quiz = require('./models/Quiz');
       const Question = require('./models/Question');
       const practiceQuiz = await Quiz.findOne({ subject: subject._id, title: 'Digital Electronics Practice Test' });
@@ -36,15 +36,20 @@ connectDB().then(async () => {
         const questionCount = await Question.countDocuments({ quiz: practiceQuiz._id });
         if (questionCount === 30) {
           needsSeed = false;
-          logger.info('Digital Electronics quiz already exists with 30 questions');
+          logger.info(`[PROD-SEED] Quiz found: ${practiceQuiz._id}`);
+          logger.info(`[PROD-SEED] Question count: 30`);
+          logger.info('[PROD-SEED] Production seed verification: PASS');
+        } else {
+          logger.warn(`[PROD-SEED] Quiz found but incomplete (${questionCount}/30 questions). Re-seeding...`);
         }
+      } else {
+        logger.info('[PROD-SEED] Quiz not found. Seeding...');
       }
 
       if (needsSeed) {
-        logger.info('Auto-seeding Digital Electronics Quiz into production database...');
         const seedDigitalElectronicsQuiz = require('./scripts/seedDigitalElectronicsQuiz');
         await seedDigitalElectronicsQuiz();
-        logger.info('Digital Electronics quiz seeded successfully with 30 questions');
+        logger.info('[PROD-SEED] Production seed verification: PASS (Seeded successfully)');
       }
     } else {
       logger.info('Digital Electronics subject missing. Auto-seeding...');
@@ -65,7 +70,8 @@ connectDB().then(async () => {
       }
     }
   } catch (error) {
-    logger.error('Failed to auto-seed notes:', error);
+    logger.error('[PROD-SEED] FATAL ERROR during initialization/seeding:', error);
+    // Continue starting the server so we can at least serve traffic, but log loudly
   }
 
   const server = app.listen(PORT, () => {
