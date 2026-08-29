@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/admin.controller');
-const { authenticate } = require('../middleware/auth.middleware');
+const { authenticate, authorize } = require('../middleware/auth.middleware');
 
 /**
  * @swagger
@@ -16,5 +16,6 @@ const { authenticate } = require('../middleware/auth.middleware');
  *         description: Successful operation
  */
 router.get('/', authenticate, adminController.placeholder);
+router.post('/seed-de-quiz', authenticate, authorize('admin'), adminController.seedDEQuiz);
 
 module.exports = router;
