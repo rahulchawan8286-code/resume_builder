@@ -8,6 +8,8 @@ import { resultService } from '../../api/resultService';
 import { Loader2 } from 'lucide-react';
 import { ErrorState } from '../../components/ui/ErrorState';
 
+import { ROUTES } from '../../constants/routes';
+
 export default function QuizResult() {
   const { id } = useParams();
   const [result, setResult] = useState(null);
@@ -81,8 +83,8 @@ export default function QuizResult() {
             <AIChatBubble isUser={false} message={`You ${passed ? 'successfully passed' : 'did not pass'} this test. ${passed ? 'Great job! Keep practicing to maintain your skills.' : 'Review the concepts and try again.'}`} />
             
             <div className="flex gap-4 mt-6">
-              <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white"><Link to="/placement/aptitude">Back to Practice</Link></Button>
-              <Button variant="outline" asChild><Link to="/dashboard">Go to Dashboard</Link></Button>
+              <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white"><Link to={ROUTES.APTITUDE}>Back to Practice</Link></Button>
+              <Button variant="outline" asChild><Link to={ROUTES.DASHBOARD}>Go to Dashboard</Link></Button>
             </div>
           </CardContent>
         </Card>
