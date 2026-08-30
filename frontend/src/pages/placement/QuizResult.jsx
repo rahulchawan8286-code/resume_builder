@@ -82,9 +82,18 @@ export default function QuizResult() {
             {/* Keeping the AI chat bubble as a placeholder for future AI integration as it's part of the design system */}
             <AIChatBubble isUser={false} message={`You ${passed ? 'successfully passed' : 'did not pass'} this test. ${passed ? 'Great job! Keep practicing to maintain your skills.' : 'Review the concepts and try again.'}`} />
             
-            <div className="flex gap-4 mt-6">
-              <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white"><Link to={ROUTES.APTITUDE}>Back to Practice</Link></Button>
-              <Button variant="outline" asChild><Link to={ROUTES.DASHBOARD}>Go to Dashboard</Link></Button>
+            <div className="flex flex-wrap gap-4 mt-6">
+              <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                <Link to={ROUTES.APTITUDE}>Back to Aptitude</Link>
+              </Button>
+              {result.quiz && (
+                <Button variant="outline" asChild>
+                  <Link to={`/core/practice/${result.quiz._id}?type=quiz`}>Practice Again</Link>
+                </Button>
+              )}
+              <Button variant="ghost" asChild>
+                <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+              </Button>
             </div>
           </CardContent>
         </Card>
