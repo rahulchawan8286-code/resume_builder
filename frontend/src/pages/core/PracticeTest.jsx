@@ -15,35 +15,51 @@ export default function PracticeTest() {
     let isMounted = true;
     
     import('../../api/quizService').then(({ quizService }) => {
-      quizService.getQuizzes(id)
-        .then(quizzes => {
+      // First, try treating 'id' as a specific quizId
+      quizService.getQuizQuestions(id)
+        .then(data => {
           if (!isMounted) return;
-          if (quizzes && quizzes.length > 0) {
-            const currentQuiz = quizzes[0];
-            setQuiz(currentQuiz);
-            
-            // Fetch questions to get the exact count
-            quizService.getQuizQuestions(currentQuiz._id)
-              .then(data => {
-                if (isMounted && data && data.questions) {
-                  setQuestionsCount(data.questions.length);
-                }
-                setIsLoading(false);
-              })
-              .catch(err => {
-                console.error('Failed to fetch quiz questions', err);
-                if (isMounted) setIsLoading(false);
-              });
-          } else {
+          if (data && data.quiz) {
+            setQuiz(data.quiz);
+            setQuestionsCount(data.questions?.length || 0);
             setIsLoading(false);
+          } else {
+            throw new Error("Not a direct quiz");
           }
         })
-        .catch(err => {
-          console.error('Failed to fetch quizzes', err);
-          if (isMounted) {
-            setError('Failed to load the practice test. Please try again.');
-            setIsLoading(false);
-          }
+        .catch(() => {
+          // Fallback: treat 'id' as a subjectId
+          quizService.getQuizzes(id)
+            .then(quizzes => {
+              if (!isMounted) return;
+              if (quizzes && quizzes.length > 0) {
+                // If there are multiple quizzes for the subject, default to the first one
+                const currentQuiz = quizzes[0];
+                setQuiz(currentQuiz);
+                
+                // Fetch questions to get the exact count
+                quizService.getQuizQuestions(currentQuiz._id)
+                  .then(data => {
+                    if (isMounted && data && data.questions) {
+                      setQuestionsCount(data.questions.length);
+                    }
+                    setIsLoading(false);
+                  })
+                  .catch(err => {
+                    console.error('Failed to fetch quiz questions', err);
+                    if (isMounted) setIsLoading(false);
+                  });
+              } else {
+                setIsLoading(false);
+              }
+            })
+            .catch(err => {
+              console.error('Failed to fetch quizzes', err);
+              if (isMounted) {
+                setError('Failed to load the practice test. Please try again.');
+                setIsLoading(false);
+              }
+            });
         });
     });
 
