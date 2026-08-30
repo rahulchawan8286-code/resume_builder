@@ -73,7 +73,7 @@ export default function AptitudeDashboard() {
                     {quiz.subject?.name}
                   </span>
                   <Button asChild>
-                    <Link to={`/core/practice/${quiz._id}`}>Start Test</Link>
+                    <Link to={`/core/practice/${quiz._id}?type=quiz`}>Start Test</Link>
                   </Button>
                 </div>
               </CardContent>

@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Play, AlertCircle } from 'lucide-react';
 
 export default function PracticeTest() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get('type') || 'quiz'; // default to quiz if not specified
+  
   const [quiz, setQuiz] = useState(null);
   const [questionsCount, setQuestionsCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,67 +18,72 @@ export default function PracticeTest() {
     let isMounted = true;
     
     import('../../api/quizService').then(({ quizService }) => {
-      // The intended architecture is for PracticeTest to receive a quizId directly.
-      quizService.getQuizQuestions(id)
-        .then(data => {
-          if (!isMounted) return;
-          if (data && data.quiz && data.questions) {
-            setQuiz(data.quiz);
-            setQuestionsCount(data.questions.length);
-            setIsLoading(false);
-          } else {
-            setError('Invalid quiz data received from the server.');
-            setIsLoading(false);
-          }
-        })
-        .catch(err => {
-          console.error('Failed to fetch quiz details', err);
-          
-          // If the user arrived here via SubjectDetails with a subjectId, attempt to find a quiz for it.
-          // We only do this explicit fallback to maintain backward compatibility with SubjectDetails.
-          quizService.getQuizzes(id)
-            .then(quizzes => {
-              if (!isMounted) return;
-              if (quizzes && quizzes.length > 0) {
-                const firstQuiz = quizzes[0];
-                quizService.getQuizQuestions(firstQuiz._id)
-                  .then(quizData => {
-                    if (!isMounted) return;
-                    if (quizData && quizData.quiz && quizData.questions) {
-                      setQuiz(quizData.quiz);
-                      setQuestionsCount(quizData.questions.length);
-                      setIsLoading(false);
-                    } else {
-                      setError('Invalid quiz data received from the server.');
-                      setIsLoading(false);
-                    }
-                  })
-                  .catch(innerErr => {
-                    console.error('Failed to fetch questions for fallback quiz', innerErr);
-                    if (isMounted) {
-                      setError('Failed to load the practice test questions.');
-                      setIsLoading(false);
-                    }
-                  });
-              } else {
-                if (isMounted) {
-                  setError('No practice tests found for this subject.');
-                  setIsLoading(false);
-                }
-              }
-            })
-            .catch(subjectErr => {
-              console.error('Failed to fetch fallback quizzes', subjectErr);
+      if (type === 'subject') {
+        // Explicitly fetch by subject ID
+        quizService.getQuizzes(id)
+          .then(quizzes => {
+            if (!isMounted) return;
+            if (quizzes && quizzes.length > 0) {
+              const firstQuiz = quizzes[0];
+              quizService.getQuizQuestions(firstQuiz._id)
+                .then(quizData => {
+                  if (!isMounted) return;
+                  if (quizData && quizData.quiz && quizData.questions) {
+                    setQuiz(quizData.quiz);
+                    setQuestionsCount(quizData.questions.length);
+                    setIsLoading(false);
+                  } else {
+                    setError('Invalid quiz data received from the server.');
+                    setIsLoading(false);
+                  }
+                })
+                .catch(innerErr => {
+                  console.error('Failed to fetch questions for subject quiz', innerErr);
+                  if (isMounted) {
+                    setError('Failed to load the practice test questions.');
+                    setIsLoading(false);
+                  }
+                });
+            } else {
               if (isMounted) {
-                setError('Failed to load the practice test. Please try again.');
+                setError('No practice tests found for this subject.');
                 setIsLoading(false);
               }
-            });
-        });
+            }
+          })
+          .catch(subjectErr => {
+            console.error('Failed to fetch quizzes by subject', subjectErr);
+            if (isMounted) {
+              setError('Failed to load the practice test. Please try again.');
+              setIsLoading(false);
+            }
+          });
+      } else {
+        // Explicitly fetch by quiz ID
+        quizService.getQuizQuestions(id)
+          .then(data => {
+            if (!isMounted) return;
+            if (data && data.quiz && data.questions) {
+              setQuiz(data.quiz);
+              setQuestionsCount(data.questions.length);
+              setIsLoading(false);
+            } else {
+              setError('Invalid quiz data received from the server.');
+              setIsLoading(false);
+            }
+          })
+          .catch(err => {
+            console.error('Failed to fetch quiz details', err);
+            if (isMounted) {
+              setError('Failed to load the practice test. Please try again.');
+              setIsLoading(false);
+            }
+          });
+      }
     });
 
     return () => { isMounted = false; };
-  }, [id]);
+  }, [id, type]);
 
   if (error) {
     return (

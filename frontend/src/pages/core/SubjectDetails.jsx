@@ -54,7 +54,7 @@ export default function SubjectDetails() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild><Link to={`/core/notes/${id}`}><BookOpen className="mr-2" size={16}/> Read Notes</Link></Button>
-          <Button asChild className="bg-indigo-600 text-white"><Link to={`/core/practice/${id}`}><FileCode2 className="mr-2" size={16}/> Practice Test</Link></Button>
+          <Button asChild className="bg-indigo-600 text-white"><Link to={`/core/practice/${id}?type=subject`}><FileCode2 className="mr-2" size={16}/> Practice Test</Link></Button>
         </div>
       </div>
 
