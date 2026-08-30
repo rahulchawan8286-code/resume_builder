@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { ErrorBoundary } from './ErrorBoundary';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -72,6 +72,8 @@ export const router = createBrowserRouter([
         children: [
           { path: ROUTES.DASHBOARD, element: <Suspense fallback={<Loader />}><Dashboard /></Suspense> },
           { path: ROUTES.APTITUDE, element: <Suspense fallback={<Loader />}><Aptitude /></Suspense> },
+          { path: '/placement', element: <Navigate to={ROUTES.APTITUDE} replace /> },
+          { path: '/placement/aptitude', element: <Navigate to={ROUTES.APTITUDE} replace /> },
           { path: ROUTES.CORE_ECE, element: <Suspense fallback={<Loader />}><Subjects /></Suspense> },
           { path: ROUTES.CODING, element: <Suspense fallback={<Loader />}><CodingDashboard /></Suspense> },
           { path: ROUTES.COMPANIES, element: <Suspense fallback={<Loader />}><CompanyList /></Suspense> },
