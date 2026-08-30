@@ -79,7 +79,7 @@ export default function NotesViewer() {
         subjectService.getSubjectNotes(id),
         progressService.getSubjectProgress(id).catch(() => null)
       ]);
-      setNotes(notesData || []);
+      setNotes(Array.isArray(notesData) ? notesData : []);
       if (progressData) setProgress(progressData);
     } catch (err) {
       console.error(err);
@@ -132,12 +132,13 @@ export default function NotesViewer() {
   };
 
   const filteredNotes = useMemo(() => {
+    if (!Array.isArray(notes)) return [];
     if (!searchQuery.trim()) return notes;
     const lowerQuery = searchQuery.toLowerCase();
     return notes.filter(n => 
-      n.title.toLowerCase().includes(lowerQuery) || 
-      (n.topics && n.topics.some(t => t.toLowerCase().includes(lowerQuery))) ||
-      (n.importantConcepts && n.importantConcepts.some(c => c.toLowerCase().includes(lowerQuery)))
+      (n.title?.toLowerCase() || '').includes(lowerQuery) || 
+      (n.topics && n.topics.some(t => (t?.toLowerCase() || '').includes(lowerQuery))) ||
+      (n.importantConcepts && n.importantConcepts.some(c => (c?.toLowerCase() || '').includes(lowerQuery)))
     );
   }, [notes, searchQuery]);
 
