@@ -52,7 +52,7 @@ export default function Subjects() {
 
       {subjects.length === 0 ? (
         <EmptyState 
-          icon={<AlertCircle className="w-12 h-12 text-gray-400" />}
+          icon={AlertCircle}
           title="No Core ECE Subjects Found"
           description="Check back later."
         />
